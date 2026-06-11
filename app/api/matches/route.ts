@@ -1,6 +1,5 @@
-import { generateText, Output } from "ai"
+import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
-import { z } from "zod"
 
 const OFFICIAL_FIXTURES = [
   { date: "2026-06-11", homeTeam: "México", homeCode: "mx", awayTeam: "Sudáfrica", awayCode: "za", time: "15:00" },
@@ -25,26 +24,18 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-16", homeTeam: "Austria", homeCode: "at", awayTeam: "Jordania", awayCode: "jo", time: "00:00" },
 ]
 
-const ResultSchema = z.object({
-  homeScore: z.number(),
-  awayScore: z.number(),
-})
-
 export async function GET() {
   try {
-    // Fecha actual forzada al 11 de junio de 2026
     const now = new Date("2026-06-11T00:00:00");
     const todayStr = now.toISOString().split('T')[0];
     const yesterday = new Date(now);
     yesterday.setDate(now.getDate() - 1);
     const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-    // 1. Partidos de Hoy (Siguen siendo fijos según FIFA)
     const todayMatches = OFFICIAL_FIXTURES
       .filter(m => m.date === todayStr)
       .map(m => ({ homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, time: m.time }));
 
-    // 2. Resultados de Ayer (DINÁMICOS)
     const yesterdayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === yesterdayStr);
     const yesterdayMatches = await Promise.all(yesterdayMatchesRaw.map(async (m) => {
       try {
@@ -62,7 +53,6 @@ export async function GET() {
       }
     }));
 
-    // 3. Próximos Partidos (Fijos según FIFA)
     const upcomingMatches = OFFICIAL_FIXTURES
       .filter(m => m.date > todayStr)
       .map(m => ({
