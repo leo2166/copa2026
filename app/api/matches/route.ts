@@ -26,17 +26,37 @@ const OFFICIAL_FIXTURES = [
 
 export async function GET() {
   try {
-    const now = new Date("2026-06-11T00:00:00");
+    const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
     const yesterday = new Date(now);
     yesterday.setDate(now.getDate() - 1);
     const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-    const todayMatches = OFFICIAL_FIXTURES
-      .filter(m => m.date === todayStr)
-      .map(m => ({ homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, time: m.time }));
+    const todayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === todayStr);
+    const todayMatches = await Promise.all(todayMatchesRaw.map(async (m) => {
+      const matchTime = new Date(`${m.date}T${m.time}:00`);
+      
+      if (now > matchTime) {
+        try {
+          const result = await generateText({
+            model: google("gemini-2.5-flash"),
+            prompt: `Busca el resultado final del partido de fútbol del Mundial 2026: ${m.homeTeam} vs ${m.awayTeam} jugado el ${m.date}. Devuelve SOLO el marcador en formato 'Home-Away' (ej: 2-1). Si no ha terminado o no hay dato, devuelve '0-0'.`,
+          });
+          const scores = result.text.trim().split('-').map(s => parseInt(s) || 0);
+          return {
+            homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode,
+            homeScore: scores[0] || 0, awayScore: scores[1] || 0,
+          };
+        } catch {
+          return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, time: m.time };
+        }
+      }
+      return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, time: m.time };
+    }));
 
     const yesterdayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === yesterdayStr);
+// ... (rest of the code for yesterdayMatches and upcomingMatches)
+
     const yesterdayMatches = await Promise.all(yesterdayMatchesRaw.map(async (m) => {
       try {
         const result = await generateText({
