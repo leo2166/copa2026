@@ -45,7 +45,7 @@ export async function GET() {
           const scores = result.text.trim().split('-').map(s => parseInt(s) || 0);
           return {
             homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode,
-            homeScore: scores[0] || 0, awayScore: scores[1] || 0,
+            homeScore: scores[0] || 0, awayScore: scores[1] || 0, time: m.time,
           };
         } catch {
           return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, time: m.time };
