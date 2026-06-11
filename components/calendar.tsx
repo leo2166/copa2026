@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import useSWR from "swr"
 import { TodayPanel, ResultsPanel, UpcomingPanel } from "@/components/panels"
 import { Loader2, RefreshCw, Trophy } from "lucide-react"
@@ -26,9 +27,16 @@ const fetcher = (url: string) =>
   })
 
 export function Calendar() {
+  const [mounted, setMounted] = useState(false)
   const { data, error, isLoading, mutate, isValidating } = useSWR<Fixtures>("/api/matches", fetcher, {
     revalidateOnFocus: false,
   })
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:py-12">
@@ -70,16 +78,19 @@ export function Calendar() {
         <div className="flex flex-col gap-6">
           {data.today?.length > 0 && <TodayPanel matches={data.today} />}
           <div className="grid gap-6 md:grid-cols-2">
-            {data.yesterday?.length > 0 && <ResultsPanel results={data.yesterday} />}
+            <ResultsPanel results={data.yesterday || []} />
             {data.upcoming?.length > 0 && <UpcomingPanel matches={data.upcoming} />}
           </div>
         </div>
       )}
 
       {/* Trophy */}
-      <div className="pointer-events-none mt-10 flex justify-center">
+      <div className="pointer-events-none mt-10 flex flex-col items-center justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/trophy.png" alt="Trofeo de la Copa del Mundo" className="h-48 w-auto drop-shadow-[0_0_40px_rgba(212,175,90,0.35)] sm:h-60" />
+        <p className="mt-4 text-center text-xs font-medium text-muted-foreground/60">
+          Generado automáticamente con IA - Propiedad ING LF
+        </p>
       </div>
     </div>
   )

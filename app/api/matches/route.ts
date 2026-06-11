@@ -1,65 +1,77 @@
 import { generateText, Output } from "ai"
+import { google } from "@ai-sdk/google"
 import { z } from "zod"
 
-export const maxDuration = 60
+const OFFICIAL_FIXTURES = [
+  { date: "2026-06-11", homeTeam: "México", homeCode: "mx", awayTeam: "Sudáfrica", awayCode: "za", time: "15:00" },
+  { date: "2026-06-11", homeTeam: "Rep. de Corea", homeCode: "kr", awayTeam: "Rep. Checa", awayCode: "cz", time: "22:00" },
+  { date: "2026-06-12", homeTeam: "Canadá", homeCode: "ca", awayTeam: "Bosnia y Herz.", awayCode: "ba", time: "15:00" },
+  { date: "2026-06-12", homeTeam: "Estados Unidos", homeCode: "us", awayTeam: "Paraguay", awayCode: "py", time: "21:00" },
+  { date: "2026-06-13", homeTeam: "Catar", homeCode: "qa", awayTeam: "Suiza", awayCode: "ch", time: "15:00" },
+  { date: "2026-06-13", homeTeam: "Brasil", homeCode: "br", awayTeam: "Marruecos", awayCode: "ma", time: "18:00" },
+  { date: "2026-06-13", homeTeam: "Haití", homeCode: "ht", awayTeam: "Escocia", awayCode: "gb-sct", time: "21:00" },
+  { date: "2026-06-13", homeTeam: "Australia", homeCode: "au", awayTeam: "Turquía", awayCode: "tr", time: "00:00" },
+  { date: "2026-06-14", homeTeam: "Alemania", homeCode: "de", awayTeam: "Curazao", awayCode: "cw", time: "13:00" },
+  { date: "2026-06-14", homeTeam: "Países Bajos", homeCode: "nl", awayTeam: "Japón", awayCode: "jp", time: "16:00" },
+  { date: "2026-06-14", homeTeam: "Costa de Marfil", homeCode: "ci", awayTeam: "Ecuador", awayCode: "ec", time: "19:00" },
+  { date: "2026-06-14", homeTeam: "Suecia", homeCode: "se", awayTeam: "Túnez", awayCode: "tn", time: "22:00" },
+  { date: "2026-06-15", homeTeam: "España", homeCode: "es", awayTeam: "Cabo Verde", awayCode: "cv", time: "12:00" },
+  { date: "2026-06-15", homeTeam: "Bélgica", homeCode: "be", awayTeam: "Egipto", awayCode: "eg", time: "15:00" },
+  { date: "2026-06-15", homeTeam: "Arabia Saudí", homeCode: "sa", awayTeam: "Uruguay", awayCode: "uy", time: "18:00" },
+  { date: "2026-06-15", homeTeam: "RI de Irán", homeCode: "ir", awayTeam: "Nueva Zelanda", awayCode: "nz", time: "21:00" },
+  { date: "2026-06-16", homeTeam: "Francia", homeCode: "fr", awayTeam: "Senegal", awayCode: "sn", time: "15:00" },
+  { date: "2026-06-16", homeTeam: "Irak", homeCode: "iq", awayTeam: "Noruega", awayCode: "no", time: "18:00" },
+  { date: "2026-06-16", homeTeam: "Argentina", homeCode: "ar", awayTeam: "Argelia", awayCode: "dz", time: "21:00" },
+  { date: "2026-06-16", homeTeam: "Austria", homeCode: "at", awayTeam: "Jordania", awayCode: "jo", time: "00:00" },
+]
 
-const MatchSchema = z.object({
-  homeTeam: z.string().describe("Nombre del equipo local en español"),
-  homeCode: z.string().describe("Código ISO de 2 letras del país local en minúsculas, ej. 'es', 'br'"),
-  awayTeam: z.string().describe("Nombre del equipo visitante en español"),
-  awayCode: z.string().describe("Código ISO de 2 letras del país visitante en minúsculas, ej. 'fr', 'mx'"),
-})
-
-const ResultSchema = MatchSchema.extend({
-  homeScore: z.number().describe("Goles del equipo local"),
-  awayScore: z.number().describe("Goles del equipo visitante"),
-})
-
-const UpcomingSchema = MatchSchema.extend({
-  date: z.string().describe("Fecha del partido, ej. '12 Junio'"),
-})
-
-const FixtureSchema = z.object({
-  today: z
-    .array(MatchSchema.extend({ time: z.string().describe("Hora del partido en formato 24h, ej. '18:00'") }))
-    .describe("Partidos que se juegan hoy"),
-  yesterday: z.array(ResultSchema).describe("Resultados de los partidos de ayer"),
-  upcoming: z.array(UpcomingSchema).describe("Próximos partidos"),
+const ResultSchema = z.object({
+  homeScore: z.number(),
+  awayScore: z.number(),
 })
 
 export async function GET() {
   try {
-    // Paso 1: buscar en internet con Google Search grounding (texto libre)
-    const search = await generateText({
-      model: "google/gemini-3-flash",
-      system:
-        "Eres un asistente experto en fútbol que busca información ACTUALIZADA en internet sobre partidos internacionales de selecciones nacionales (mundial, clasificatorias, amistosos). Responde siempre en español.",
-      prompt:
-        "Busca en internet los partidos de fútbol de selecciones nacionales más relevantes y recientes. Indica claramente: los partidos de HOY con su hora, los resultados de AYER con sus marcadores, y los PRÓXIMOS partidos con su fecha. Incluye el nombre de los países.",
-      providerOptions: { google: { useSearchGrounding: true } },
-    })
+    // Fecha actual forzada al 11 de junio de 2026
+    const now = new Date("2026-06-11T00:00:00");
+    const todayStr = now.toISOString().split('T')[0];
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-    // Paso 2: estructurar el texto encontrado en JSON
-    const { experimental_output } = await generateText({
-      model: "openai/gpt-5-mini",
-      system:
-        "Conviertes información de fútbol en datos estructurados. Responde en español. Usa códigos ISO de país de 2 letras en minúsculas para las banderas (ej. 'es', 'br', 'ar', 'fr', 'mx', 'de', 'jp', 'uy', 'us', 'co', 'kr', 'pt', 'it', 'nl', 'be', 'hr').",
-      prompt: `A partir de la siguiente información encontrada en internet, extrae hasta 4 partidos de HOY (con hora), hasta 4 resultados de AYER (con marcadores) y hasta 4 próximos partidos (con fecha):\n\n${search.text}`,
-      experimental_output: Output.object({ schema: FixtureSchema }),
-    })
+    // 1. Partidos de Hoy (Siguen siendo fijos según FIFA)
+    const todayMatches = OFFICIAL_FIXTURES
+      .filter(m => m.date === todayStr)
+      .map(m => ({ homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, time: m.time }));
 
-    return Response.json(experimental_output)
+    // 2. Resultados de Ayer (DINÁMICOS)
+    const yesterdayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === yesterdayStr);
+    const yesterdayMatches = await Promise.all(yesterdayMatchesRaw.map(async (m) => {
+      try {
+        const result = await generateText({
+          model: google("gemini-2.5-flash"),
+          prompt: `Busca el resultado final del partido de fútbol del Mundial 2026: ${m.homeTeam} vs ${m.awayTeam} jugado el ${m.date}. Devuelve SOLO el marcador en formato 'Home-Away' (ej: 2-1). Si no ha terminado o no hay dato, devuelve '0-0'.`,
+        });
+        const scores = result.text.trim().split('-').map(s => parseInt(s) || 0);
+        return {
+          homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode,
+          homeScore: scores[0] || 0, awayScore: scores[1] || 0,
+        };
+      } catch {
+        return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, homeScore: 0, awayScore: 0 };
+      }
+    }));
+
+    // 3. Próximos Partidos (Fijos según FIFA)
+    const upcomingMatches = OFFICIAL_FIXTURES
+      .filter(m => m.date > todayStr)
+      .map(m => ({
+        homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode,
+        date: m.date.split('-')[1] === '06' ? `${m.date.split('-')[2]} Junio` : m.date
+      }));
+
+    return Response.json({ today: todayMatches, yesterday: yesterdayMatches, upcoming: upcomingMatches });
   } catch (error) {
-    console.log("[v0] Error fetching matches:", error)
-    const message = error instanceof Error ? error.message : String(error)
-    const needsBilling = message.includes("credit card") || message.includes("requires a valid")
-    return Response.json(
-      {
-        error: needsBilling
-          ? "El Vercel AI Gateway necesita una tarjeta de crédito registrada para activar tus créditos gratuitos. Agrégala en la configuración de tu proyecto y vuelve a intentarlo."
-          : "No se pudo obtener la información. Intenta actualizar.",
-      },
-      { status: 500 },
-    )
+    return Response.json({ error: "Error al procesar los datos." }, { status: 500 });
   }
 }
