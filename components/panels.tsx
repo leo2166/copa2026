@@ -95,7 +95,7 @@ export function ResultsPanel({ results }: { results: Result[] }) {
 
 export function UpcomingPanel({ matches }: { matches: Upcoming[] }) {
   return (
-    <Panel title="Próximos Partidos" titleClass="text-chart-4">
+    <Panel title="Próximos Partidos" titleClass="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 via-yellow-300 to-yellow-600">
       <div className="grid grid-cols-1 gap-4">
         {matches.slice(0, 3).map((m, i) => (
           <div 
@@ -125,4 +125,5 @@ export function UpcomingPanel({ matches }: { matches: Upcoming[] }) {
     </Panel>
   )
 }
+
 
