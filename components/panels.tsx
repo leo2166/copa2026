@@ -125,10 +125,4 @@ export function UpcomingPanel({ matches }: { matches: Upcoming[] }) {
     </Panel>
   )
 }
-y partidos programados</p>
-        )}
-      </div>
-    </Panel>
-  )
-}
 
