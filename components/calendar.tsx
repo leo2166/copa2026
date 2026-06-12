@@ -60,7 +60,7 @@ export function Calendar() {
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:py-12 animate-fade-in">
 
-      <header className="flex items-center justify-between mb-8">
+      <header className="flex items-center justify-center gap-4 mb-8">
         <h1 className="text-balance bg-gradient-to-b from-primary to-primary/70 bg-clip-text text-3xl font-extrabold uppercase tracking-wide text-transparent sm:text-4xl md:text-5xl">
           Calendario Mundial 2026
         </h1>
