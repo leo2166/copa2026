@@ -1,5 +1,6 @@
 allowBuilds:
-  sharp: set this to true or false
+  esbuild: true
+  sharp: true
 minimumReleaseAgeExclude:
   - '@ai-sdk/react@3.0.202'
   - ai@6.0.200
