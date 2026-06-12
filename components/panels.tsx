@@ -109,7 +109,7 @@ export function UpcomingPanel({ matches }: { matches: Upcoming[] }) {
             
             <div className="flex flex-col items-center px-4">
               <span className="text-[10px] uppercase font-bold text-muted-foreground mb-1">vs</span>
-              <span className="text-xs font-bold text-chart-4">{m.date}</span>
+              <span className="text-xs font-bold text-[#39FF14]">{m.date}</span>
             </div>
 
             <div className="flex items-center gap-3 flex-1 justify-end">
@@ -125,3 +125,10 @@ export function UpcomingPanel({ matches }: { matches: Upcoming[] }) {
     </Panel>
   )
 }
+y partidos programados</p>
+        )}
+      </div>
+    </Panel>
+  )
+}
+
