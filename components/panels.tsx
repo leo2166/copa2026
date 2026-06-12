@@ -60,7 +60,7 @@ export function TodayPanel({ matches }: { matches: any[] }) {
 
 export function ResultsPanel({ results }: { results: Result[] }) {
   return (
-    <Panel title="Resultados de Ayer" titleClass="text-chart-3">
+    <Panel title="Resultados de Ayer" titleClass="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 via-yellow-300 to-yellow-600">
       <div className="grid grid-cols-1 gap-4">
         {results.slice(0, 3).map((r, i) => (
           <div 
@@ -125,5 +125,6 @@ export function UpcomingPanel({ matches }: { matches: Upcoming[] }) {
     </Panel>
   )
 }
+
 
 
