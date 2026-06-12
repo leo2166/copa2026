@@ -1,4 +1,5 @@
-import { Flag } from "@/components/flag"
+import Card from "@/components/ui/card";
+import { Flag } from "@/components/flag";
 
 type TodayMatch = { homeTeam: string; homeCode: string; awayTeam: string; awayCode: string; time: string }
 type Result = {
@@ -21,7 +22,7 @@ function Panel({
   children: React.ReactNode
 }) {
   return (
-    <section className="rounded-2xl border border-border bg-card/60 p-5 shadow-lg backdrop-blur-sm sm:p-6">
+    <Card className="rounded-2xl border border-border bg-card/60 p-5 sm:p-6 shadow-lg backdrop-blur-sm">
       <h2
         className={`mb-4 text-center text-lg font-bold uppercase tracking-wide sm:text-xl ${titleClass ?? "text-foreground"}`}
       >
@@ -29,7 +30,7 @@ function Panel({
       </h2>
       <div className="mx-auto mb-4 h-px w-2/3 bg-border" />
       {children}
-    </section>
+    </Card>
   )
 }
 

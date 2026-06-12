@@ -1,6 +1,3 @@
-import { generateText } from "ai"
-import { google } from "@ai-sdk/google"
-
 const OFFICIAL_FIXTURES = [
   { date: "2026-06-11", homeTeam: "México", homeCode: "mx", awayTeam: "Sudáfrica", awayCode: "za", time: "15:00" },
   { date: "2026-06-11", homeTeam: "Rep. de Corea", homeCode: "kr", awayTeam: "Rep. Checa", awayCode: "cz", time: "22:00" },
@@ -22,56 +19,71 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-16", homeTeam: "Irak", homeCode: "iq", awayTeam: "Noruega", awayCode: "no", time: "18:00" },
   { date: "2026-06-16", homeTeam: "Argentina", homeCode: "ar", awayTeam: "Argelia", awayCode: "dz", time: "21:00" },
   { date: "2026-06-16", homeTeam: "Austria", homeCode: "at", awayTeam: "Jordania", awayCode: "jo", time: "00:00" },
-]
+];
+
+async function fetchEspnScores(dateStr: string) {
+  try {
+    const formattedDate = dateStr.replace(/-/g, '');
+    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${formattedDate}`, { next: { revalidate: 60 } });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.events || [];
+  } catch (e) {
+    return [];
+  }
+}
 
 export async function GET() {
   try {
+    // Hora real del sistema
     const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
-    const yesterday = new Date(now);
-    yesterday.setDate(now.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    // Fechas y horas en base a Venezuela (UTC-4)
+    const vzlaFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Caracas', year: 'numeric', month: '2-digit', day: '2-digit' });
+    const todayStr = vzlaFormatter.format(now);
+    
+    const yesterdayDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const yesterdayStr = vzlaFormatter.format(yesterdayDate);
 
+    const espnToday = await fetchEspnScores(todayStr);
     const todayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === todayStr);
-    const todayMatches = await Promise.all(todayMatchesRaw.map(async (m) => {
-      const matchTime = new Date(`${m.date}T${m.time}:00`);
+    const todayMatches = todayMatchesRaw.map((m) => {
+      const matchTime = new Date(`${m.date}T${m.time}:00-04:00`);
       
       if (now > matchTime) {
-        try {
-          const result = await generateText({
-            model: google("gemini-2.5-flash"),
-            prompt: `Busca el resultado final del partido de fútbol del Mundial 2026: ${m.homeTeam} vs ${m.awayTeam} jugado el ${m.date}. Devuelve SOLO el marcador en formato 'Home-Away' (ej: 2-1). Si no ha terminado o no hay dato, devuelve '0-0'.`,
-          });
-          const scores = result.text.trim().split('-').map(s => parseInt(s) || 0);
+        const targetTime = matchTime.getTime();
+        const event = espnToday.find((e: any) => new Date(e.date).getTime() === targetTime);
+        if (event && event.competitions && event.competitions[0]) {
+          const comp = event.competitions[0];
+          const home = comp.competitors.find((c: any) => c.homeAway === "home");
+          const away = comp.competitors.find((c: any) => c.homeAway === "away");
           return {
             homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode,
-            homeScore: scores[0] || 0, awayScore: scores[1] || 0, time: m.time,
+            homeScore: parseInt(home?.score) || 0, awayScore: parseInt(away?.score) || 0, time: m.time,
           };
-        } catch {
-          return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, time: m.time };
         }
+        return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, homeScore: 0, awayScore: 0, time: m.time };
       }
       return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, time: m.time };
-    }));
+    });
 
+    const espnYesterday = await fetchEspnScores(yesterdayStr);
     const yesterdayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === yesterdayStr);
-// ... (rest of the code for yesterdayMatches and upcomingMatches)
 
-    const yesterdayMatches = await Promise.all(yesterdayMatchesRaw.map(async (m) => {
-      try {
-        const result = await generateText({
-          model: google("gemini-2.5-flash"),
-          prompt: `Busca el resultado final del partido de fútbol del Mundial 2026: ${m.homeTeam} vs ${m.awayTeam} jugado el ${m.date}. Devuelve SOLO el marcador en formato 'Home-Away' (ej: 2-1). Si no ha terminado o no hay dato, devuelve '0-0'.`,
-        });
-        const scores = result.text.trim().split('-').map(s => parseInt(s) || 0);
+    const yesterdayMatches = yesterdayMatchesRaw.map((m) => {
+      const matchTime = new Date(`${m.date}T${m.time}:00-04:00`);
+      const targetTime = matchTime.getTime();
+      const event = espnYesterday.find((e: any) => new Date(e.date).getTime() === targetTime);
+      if (event && event.competitions && event.competitions[0]) {
+        const comp = event.competitions[0];
+        const home = comp.competitors.find((c: any) => c.homeAway === "home");
+        const away = comp.competitors.find((c: any) => c.homeAway === "away");
         return {
           homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode,
-          homeScore: scores[0] || 0, awayScore: scores[1] || 0,
+          homeScore: parseInt(home?.score) || 0, awayScore: parseInt(away?.score) || 0,
         };
-      } catch {
-        return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, homeScore: 0, awayScore: 0 };
       }
-    }));
+      return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, homeScore: 0, awayScore: 0 };
+    });
 
     const upcomingMatches = OFFICIAL_FIXTURES
       .filter(m => m.date > todayStr)
