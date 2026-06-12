@@ -36,7 +36,7 @@ function Panel({
 
 export function TodayPanel({ matches }: { matches: any[] }) {
   return (
-    <Panel title="Partidos de Hoy" titleClass="text-accent">
+    <Panel title="Partidos de Hoy" titleClass="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 via-yellow-300 to-yellow-600">
       <ul className="flex flex-col gap-4">
         {matches.map((m, i) => (
           <li key={i} className="flex items-center justify-center gap-3 sm:gap-4">
@@ -44,7 +44,7 @@ export function TodayPanel({ matches }: { matches: any[] }) {
               <span className="text-right text-sm font-semibold sm:text-base">{m.homeTeam}</span>
               <Flag code={m.homeCode} />
             </div>
-            <span className="min-w-[4.5rem] text-center text-base font-bold text-accent tabular-nums sm:text-lg">
+            <span className="min-w-[4.5rem] text-center text-base font-bold text-[#39FF14] tabular-nums sm:text-lg">
               {m.homeScore !== undefined ? `${m.homeScore} - ${m.awayScore}` : m.time}
             </span>
             <div className="flex flex-1 items-center gap-2 sm:gap-3">
