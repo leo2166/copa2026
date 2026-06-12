@@ -148,7 +148,7 @@ export function Calendar() {
           priority
         />
         <p className="mt-4 text-center text-xs font-medium text-muted-foreground/60">
-          Generado automáticamente con IA - Propiedad ING LF
+          Diseño y Desarrollo: ING LF
         </p>
       </div>
 
