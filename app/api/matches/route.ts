@@ -47,7 +47,10 @@ export async function GET() {
     const espnToday = await fetchEspnScores(todayStr);
     const todayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === todayStr);
     const todayMatches = todayMatchesRaw.map((m) => {
+      // Si la hora es 00:00 es medianoche al FINAL del día (no al inicio),
+      // por eso se suma 24 horas para que no se trate como partido ya pasado.
       const matchTime = new Date(`${m.date}T${m.time}:00-04:00`);
+      if (m.time === "00:00") matchTime.setDate(matchTime.getDate() + 1);
       
       if (now > matchTime) {
         const targetTime = matchTime.getTime();

@@ -45,6 +45,7 @@ export function TodayPanel({ matches }: { matches: any[] }) {
               <Flag code={m.homeCode} />
             </div>
             <span className="min-w-[4.5rem] text-center text-base font-bold text-[#39FF14] tabular-nums sm:text-lg">
+              {/* 00:00 = medianoche en hora militar (inicio del nuevo día) */}
               {m.homeScore !== undefined ? `${m.homeScore} - ${m.awayScore}` : m.time}
             </span>
             <div className="flex flex-1 items-center gap-2 sm:gap-3">
