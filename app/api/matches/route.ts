@@ -44,14 +44,28 @@ export async function GET() {
     const yesterdayDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     const yesterdayStr = vzlaFormatter.format(yesterdayDate);
 
-    const espnToday = await fetchEspnScores(todayStr);
+    const espnCache: Record<string, any[]> = {};
+    async function getEspnEventsForDate(dateStr: string) {
+      if (espnCache[dateStr]) return espnCache[dateStr];
+      const events = await fetchEspnScores(dateStr);
+      espnCache[dateStr] = events;
+      return events;
+    }
+
     const todayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === todayStr);
-    const todayMatches = todayMatchesRaw.map((m) => {
+    const todayMatches = await Promise.all(todayMatchesRaw.map(async (m) => {
       const matchTime = new Date(`${m.date}T${m.time}:00-04:00`);
+      if (m.time === "00:00") matchTime.setDate(matchTime.getDate() + 1);
       
       if (now > matchTime) {
         const targetTime = matchTime.getTime();
-        const event = espnToday.find((e: any) => new Date(e.date).getTime() === targetTime);
+        const utcYear = matchTime.getUTCFullYear();
+        const utcMonth = String(matchTime.getUTCMonth() + 1).padStart(2, '0');
+        const utcDay = String(matchTime.getUTCDate()).padStart(2, '0');
+        const utcDateStr = `${utcYear}${utcMonth}${utcDay}`;
+
+        const espnEvents = await getEspnEventsForDate(utcDateStr);
+        const event = espnEvents.find((e: any) => new Date(e.date).getTime() === targetTime);
         if (event && event.competitions && event.competitions[0]) {
           const comp = event.competitions[0];
           const home = comp.competitors.find((c: any) => c.homeAway === "home");
@@ -64,15 +78,21 @@ export async function GET() {
         return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, homeScore: 0, awayScore: 0, time: m.time };
       }
       return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, time: m.time };
-    });
+    }));
 
-    const espnYesterday = await fetchEspnScores(yesterdayStr);
     const yesterdayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === yesterdayStr);
-
-    const yesterdayMatches = yesterdayMatchesRaw.map((m) => {
+    const yesterdayMatches = await Promise.all(yesterdayMatchesRaw.map(async (m) => {
       const matchTime = new Date(`${m.date}T${m.time}:00-04:00`);
+      if (m.time === "00:00") matchTime.setDate(matchTime.getDate() + 1);
+      
       const targetTime = matchTime.getTime();
-      const event = espnYesterday.find((e: any) => new Date(e.date).getTime() === targetTime);
+      const utcYear = matchTime.getUTCFullYear();
+      const utcMonth = String(matchTime.getUTCMonth() + 1).padStart(2, '0');
+      const utcDay = String(matchTime.getUTCDate()).padStart(2, '0');
+      const utcDateStr = `${utcYear}${utcMonth}${utcDay}`;
+
+      const espnEvents = await getEspnEventsForDate(utcDateStr);
+      const event = espnEvents.find((e: any) => new Date(e.date).getTime() === targetTime);
       if (event && event.competitions && event.competitions[0]) {
         const comp = event.competitions[0];
         const home = comp.competitors.find((c: any) => c.homeAway === "home");
@@ -83,7 +103,7 @@ export async function GET() {
         };
       }
       return { homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode, homeScore: 0, awayScore: 0 };
-    });
+    }));
 
     const upcomingMatches = OFFICIAL_FIXTURES
       .filter(m => m.date > todayStr)
