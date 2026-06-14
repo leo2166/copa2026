@@ -47,10 +47,7 @@ export async function GET() {
     const espnToday = await fetchEspnScores(todayStr);
     const todayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === todayStr);
     const todayMatches = todayMatchesRaw.map((m) => {
-      // Si la hora es 00:00 es medianoche al FINAL del día (no al inicio),
-      // por eso se suma 24 horas para que no se trate como partido ya pasado.
       const matchTime = new Date(`${m.date}T${m.time}:00-04:00`);
-      if (m.time === "00:00") matchTime.setDate(matchTime.getDate() + 1);
       
       if (now > matchTime) {
         const targetTime = matchTime.getTime();
@@ -90,6 +87,7 @@ export async function GET() {
 
     const upcomingMatches = OFFICIAL_FIXTURES
       .filter(m => m.date > todayStr)
+      .slice(0, 4)
       .map(m => ({
         homeTeam: m.homeTeam, homeCode: m.homeCode, awayTeam: m.awayTeam, awayCode: m.awayCode,
         date: m.date.split('-')[1] === '06' ? `${m.date.split('-')[2]} Junio` : m.date

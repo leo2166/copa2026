@@ -63,7 +63,7 @@ export function ResultsPanel({ results }: { results: Result[] }) {
   return (
     <Panel title="Resultados de Ayer" titleClass="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 via-yellow-300 to-yellow-600">
       <div className="grid grid-cols-1 gap-4">
-        {results.slice(0, 3).map((r, i) => (
+        {results.map((r, i) => (
           <div 
             key={i} 
             className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3 transition-all hover:bg-secondary/50 hover:shadow-md"
@@ -98,7 +98,7 @@ export function UpcomingPanel({ matches }: { matches: Upcoming[] }) {
   return (
     <Panel title="Próximos Partidos" titleClass="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 via-yellow-300 to-yellow-600">
       <div className="grid grid-cols-1 gap-4">
-        {matches.slice(0, 3).map((m, i) => (
+        {matches.map((m, i) => (
           <div 
             key={i} 
             className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3 transition-all hover:bg-secondary/50 hover:shadow-md"
