@@ -7,7 +7,24 @@ export function Flag({
   code: string
   className?: string
 }) {
-  const normalized = code?.toLowerCase().trim()
+  const normalized = code?.toLowerCase().trim() ?? ""
+  
+  // Validar si es un código de país estándar (2 letras o excepciones como gb-sct, gb-wls, gb-eng)
+  const isCountryCode = /^[a-z]{2}$|^gb-[a-z]{3}$/.test(normalized)
+
+  if (!isCountryCode) {
+    return (
+      <span
+        className={cn(
+          "inline-flex h-6 w-9 shrink-0 items-center justify-center rounded-[3px] bg-gradient-to-br from-secondary/50 to-primary/20 text-[10px] font-bold text-foreground/70 ring-1 ring-white/10 shadow-sm",
+          className
+        )}
+      >
+        ⚽
+      </span>
+    )
+  }
+
   return (
     <span
       className={cn(

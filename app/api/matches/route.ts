@@ -95,6 +95,49 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-18", homeTeam: "Cabo Verde",     homeCode: "cv",     awayTeam: "Bélgica",         awayCode: "be",     time: "00:00" },
   { date: "2026-06-19", homeTeam: "Angola",         homeCode: "ao",     awayTeam: "Portugal",        awayCode: "pt",     time: "00:00" },
   { date: "2026-06-20", homeTeam: "Curazao",        homeCode: "cw",     awayTeam: "Costa de Marfil", awayCode: "ci",     time: "00:00" },
+  // ── Dieciseisavos de Final (Ronda de 32) ──
+  { date: "2026-06-28", homeTeam: "2° Grupo A",     homeCode: "2a",     awayTeam: "2° Grupo B",      awayCode: "2b",     time: "15:00" }, // Partido 73
+  { date: "2026-06-29", homeTeam: "1° Grupo E",     homeCode: "1e",     awayTeam: "3° A/B/C/D/F",    awayCode: "3a",     time: "16:30" }, // Partido 74
+  { date: "2026-06-29", homeTeam: "1° Grupo F",     homeCode: "1f",     awayTeam: "2° Grupo C",      awayCode: "2c",     time: "21:00" }, // Partido 75
+  { date: "2026-06-29", homeTeam: "1° Grupo C",     homeCode: "1c",     awayTeam: "2° Grupo F",      awayCode: "2f",     time: "13:00" }, // Partido 76
+  { date: "2026-06-30", homeTeam: "1° Grupo I",     homeCode: "1i",     awayTeam: "3° C/D/F/G/H",    awayCode: "3c",     time: "17:00" }, // Partido 77
+  { date: "2026-06-30", homeTeam: "2° Grupo E",     homeCode: "2e",     awayTeam: "2° Grupo I",      awayCode: "2i",     time: "13:00" }, // Partido 78
+  { date: "2026-06-30", homeTeam: "1° Grupo A",     homeCode: "1a",     awayTeam: "3° C/E/F/H/I",    awayCode: "3c",     time: "21:00" }, // Partido 79
+  { date: "2026-07-01", homeTeam: "1° Grupo L",     homeCode: "1l",     awayTeam: "3° E/H/I/J/K",    awayCode: "3e",     time: "12:00" }, // Partido 80
+  { date: "2026-07-01", homeTeam: "1° Grupo D",     homeCode: "1d",     awayTeam: "3° B/E/F/I/J",    awayCode: "3b",     time: "20:00" }, // Partido 81
+  { date: "2026-07-01", homeTeam: "1° Grupo G",     homeCode: "1g",     awayTeam: "3° A/E/H/I/J",    awayCode: "3a",     time: "16:00" }, // Partido 82
+  { date: "2026-07-02", homeTeam: "2° Grupo K",     homeCode: "2k",     awayTeam: "2° Grupo L",      awayCode: "2l",     time: "19:00" }, // Partido 83
+  { date: "2026-07-02", homeTeam: "1° Grupo H",     homeCode: "1h",     awayTeam: "2° Grupo J",      awayCode: "2j",     time: "15:00" }, // Partido 84
+  { date: "2026-07-02", homeTeam: "1° Grupo B",     homeCode: "1b",     awayTeam: "3° E/F/G/I/J",    awayCode: "3e",     time: "23:00" }, // Partido 85
+  { date: "2026-07-03", homeTeam: "1° Grupo J",     homeCode: "1j",     awayTeam: "2° Grupo H",      awayCode: "2h",     time: "18:00" }, // Partido 86
+  { date: "2026-07-03", homeTeam: "1° Grupo K",     homeCode: "1k",     awayTeam: "3° D/E/I/J/L",    awayCode: "3d",     time: "21:30" }, // Partido 87
+  { date: "2026-07-03", homeTeam: "2° Grupo D",     homeCode: "2d",     awayTeam: "2° Grupo G",      awayCode: "2g",     time: "14:00" }, // Partido 88
+
+  // ── Octavos de Final ──
+  { date: "2026-07-04", homeTeam: "Ganador 74",     homeCode: "g74",    awayTeam: "Ganador 77",      awayCode: "g77",    time: "17:00" }, // Partido 89
+  { date: "2026-07-04", homeTeam: "Ganador 73",     homeCode: "g73",    awayTeam: "Ganador 75",      awayCode: "g75",    time: "13:00" }, // Partido 90
+  { date: "2026-07-05", homeTeam: "Ganador 76",     homeCode: "g76",    awayTeam: "Ganador 78",      awayCode: "g78",    time: "16:00" }, // Partido 91
+  { date: "2026-07-05", homeTeam: "Ganador 79",     homeCode: "g79",    awayTeam: "Ganador 80",      awayCode: "g80",    time: "20:00" }, // Partido 92
+  { date: "2026-07-06", homeTeam: "Ganador 83",     homeCode: "g83",    awayTeam: "Ganador 84",      awayCode: "g84",    time: "15:00" }, // Partido 93
+  { date: "2026-07-06", homeTeam: "Ganador 81",     homeCode: "g81",    awayTeam: "Ganador 82",      awayCode: "g82",    time: "20:00" }, // Partido 94
+  { date: "2026-07-07", homeTeam: "Ganador 86",     homeCode: "g86",    awayTeam: "Ganador 88",      awayCode: "g88",    time: "12:00" }, // Partido 95
+  { date: "2026-07-07", homeTeam: "Ganador 85",     homeCode: "g85",    awayTeam: "Ganador 87",      awayCode: "g87",    time: "16:00" }, // Partido 96
+
+  // ── Cuartos de Final ──
+  { date: "2026-07-09", homeTeam: "Ganador 89",     homeCode: "g89",    awayTeam: "Ganador 90",      awayCode: "g90",    time: "16:00" }, // Partido 97
+  { date: "2026-07-10", homeTeam: "Ganador 93",     homeCode: "g93",    awayTeam: "Ganador 94",      awayCode: "g94",    time: "15:00" }, // Partido 98
+  { date: "2026-07-11", homeTeam: "Ganador 91",     homeCode: "g91",    awayTeam: "Ganador 92",      awayCode: "g92",    time: "17:00" }, // Partido 99
+  { date: "2026-07-11", homeTeam: "Ganador 95",     homeCode: "g95",    awayTeam: "Ganador 96",      awayCode: "g96",    time: "21:00" }, // Partido 100
+
+  // ── Semifinales ──
+  { date: "2026-07-14", homeTeam: "Ganador 97",     homeCode: "g97",    awayTeam: "Ganador 98",      awayCode: "g98",    time: "15:00" }, // Partido 101
+  { date: "2026-07-15", homeTeam: "Ganador 99",     homeCode: "g99",    awayTeam: "Ganador 100",     awayCode: "g100",   time: "15:00" }, // Partido 102
+
+  // ── Tercer Puesto ──
+  { date: "2026-07-18", homeTeam: "Perdedor 101",   homeCode: "p101",   awayTeam: "Perdedor 102",    awayCode: "p102",   time: "17:00" }, // Partido 103
+
+  // ── Final ──
+  { date: "2026-07-19", homeTeam: "Ganador 101",    homeCode: "g101",   awayTeam: "Ganador 102",     awayCode: "g102",   time: "15:00" }, // Partido 104
 ];
 
 async function fetchEspnScores(dateStr: string) {
