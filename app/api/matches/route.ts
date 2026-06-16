@@ -1,6 +1,6 @@
 // ─── Fixture completo Fase de Grupos — Mundial 2026 ───────────────────────────
 // Todos los horarios en hora de Venezuela (VZT = UTC-4 = EDT verano EE.UU.)
-// Un partido a las 00:00 pertenece al día de su fecha (m.date), NO al día siguiente.
+// Un partido a las 00:00 pertenece al día anterior en la lógica de programación/transmisión.
 const OFFICIAL_FIXTURES = [
   // ── 11 de Junio ──
   { date: "2026-06-11", homeTeam: "México",         homeCode: "mx",     awayTeam: "Sudáfrica",       awayCode: "za",     time: "15:00" },
@@ -12,7 +12,7 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-13", homeTeam: "Catar",          homeCode: "qa",     awayTeam: "Suiza",           awayCode: "ch",     time: "15:00" },
   { date: "2026-06-13", homeTeam: "Brasil",         homeCode: "br",     awayTeam: "Marruecos",       awayCode: "ma",     time: "18:00" },
   { date: "2026-06-13", homeTeam: "Haití",          homeCode: "ht",     awayTeam: "Escocia",         awayCode: "gb-sct", time: "21:00" },
-  { date: "2026-06-13", homeTeam: "Australia",      homeCode: "au",     awayTeam: "Turquía",         awayCode: "tr",     time: "00:00" },
+  { date: "2026-06-14", homeTeam: "Australia",      homeCode: "au",     awayTeam: "Turquía",         awayCode: "tr",     time: "00:00" }, // 21:00 del 13 en Vancouver
   // ── 14 de Junio ──
   { date: "2026-06-14", homeTeam: "Alemania",       homeCode: "de",     awayTeam: "Curazao",         awayCode: "cw",     time: "13:00" },
   { date: "2026-06-14", homeTeam: "Países Bajos",   homeCode: "nl",     awayTeam: "Japón",           awayCode: "jp",     time: "16:00" },
@@ -27,12 +27,12 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-16", homeTeam: "Francia",        homeCode: "fr",     awayTeam: "Senegal",         awayCode: "sn",     time: "15:00" },
   { date: "2026-06-16", homeTeam: "Irak",           homeCode: "iq",     awayTeam: "Noruega",         awayCode: "no",     time: "18:00" },
   { date: "2026-06-16", homeTeam: "Argentina",      homeCode: "ar",     awayTeam: "Argelia",         awayCode: "dz",     time: "21:00" },
-  { date: "2026-06-16", homeTeam: "Austria",        homeCode: "at",     awayTeam: "Jordania",        awayCode: "jo",     time: "00:00" },
+  { date: "2026-06-17", homeTeam: "Austria",        homeCode: "at",     awayTeam: "Jordania",        awayCode: "jo",     time: "00:00" }, // 21:00 del 16 en San Francisco
   // ── 17 de Junio ──
-  { date: "2026-06-17", homeTeam: "Portugal",       homeCode: "pt",     awayTeam: "Angola",          awayCode: "ao",     time: "12:00" },
-  { date: "2026-06-17", homeTeam: "México",         homeCode: "mx",     awayTeam: "Rep. Checa",      awayCode: "cz",     time: "15:00" },
-  { date: "2026-06-17", homeTeam: "Sudáfrica",      homeCode: "za",     awayTeam: "Rep. de Corea",   awayCode: "kr",     time: "18:00" },
-  { date: "2026-06-17", homeTeam: "Polonia",        homeCode: "pl",     awayTeam: "Eslovenia",       awayCode: "si",     time: "21:00" },
+  { date: "2026-06-17", homeTeam: "Portugal",       homeCode: "pt",     awayTeam: "RD Congo",        awayCode: "cd",     time: "13:00" },
+  { date: "2026-06-17", homeTeam: "Inglaterra",     homeCode: "gb-eng", awayTeam: "Croacia",         awayCode: "hr",     time: "16:00" },
+  { date: "2026-06-17", homeTeam: "Ghana",          homeCode: "gh",     awayTeam: "Panamá",          awayCode: "pa",     time: "19:00" },
+  { date: "2026-06-17", homeTeam: "Uzbekistán",     homeCode: "uz",     awayTeam: "Colombia",        awayCode: "co",     time: "22:00" },
   // ── 18 de Junio ──
   { date: "2026-06-18", homeTeam: "Rep. Checa",     homeCode: "cz",     awayTeam: "Sudáfrica",       awayCode: "za",     time: "12:00" },
   { date: "2026-06-18", homeTeam: "Suiza",          homeCode: "ch",     awayTeam: "Bosnia y Herz.",  awayCode: "ba",     time: "15:00" },
@@ -91,10 +91,10 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-27", homeTeam: "Argelia",        homeCode: "dz",     awayTeam: "Austria",         awayCode: "at",     time: "22:00" },
   { date: "2026-06-27", homeTeam: "Senegal",        homeCode: "sn",     awayTeam: "Argentina",       awayCode: "ar",     time: "22:00" },
   // ── Grupos adicionales (Fase de Grupos Días 7-9) ──
-  { date: "2026-06-17", homeTeam: "Eslovenia",      homeCode: "si",     awayTeam: "Arabia Saudí",    awayCode: "sa",     time: "00:00" },
-  { date: "2026-06-18", homeTeam: "Cabo Verde",     homeCode: "cv",     awayTeam: "Bélgica",         awayCode: "be",     time: "00:00" },
-  { date: "2026-06-19", homeTeam: "Angola",         homeCode: "ao",     awayTeam: "Portugal",        awayCode: "pt",     time: "00:00" },
-  { date: "2026-06-20", homeTeam: "Curazao",        homeCode: "cw",     awayTeam: "Costa de Marfil", awayCode: "ci",     time: "00:00" },
+  { date: "2026-06-18", homeTeam: "Eslovenia",      homeCode: "si",     awayTeam: "Arabia Saudí",    awayCode: "sa",     time: "00:00" },
+  { date: "2026-06-19", homeTeam: "Cabo Verde",     homeCode: "cv",     awayTeam: "Bélgica",         awayCode: "be",     time: "00:00" },
+  { date: "2026-06-20", homeTeam: "Angola",         homeCode: "ao",     awayTeam: "Portugal",        awayCode: "pt",     time: "00:00" },
+  { date: "2026-06-21", homeTeam: "Curazao",        homeCode: "cw",     awayTeam: "Costa de Marfil", awayCode: "ci",     time: "00:00" },
   // ── Dieciseisavos de Final (Ronda de 32) ──
   { date: "2026-06-28", homeTeam: "2° Grupo A",     homeCode: "2a",     awayTeam: "2° Grupo B",      awayCode: "2b",     time: "15:00" }, // Partido 73
   { date: "2026-06-29", homeTeam: "1° Grupo E",     homeCode: "1e",     awayTeam: "3° A/B/C/D/F",    awayCode: "3a",     time: "16:30" }, // Partido 74
@@ -152,11 +152,32 @@ async function fetchEspnScores(dateStr: string) {
   }
 }
 
+// Devuelve el Date real del kick-off para buscar en ESPN y comparar con now.
+// Partidos con time="00:00" ocurren a la medianoche del día SIGUIENTE en el calendario
+// (D+1 00:00 EDT), pero pertenecen a la jornada D para su visualización.
+function getMatchTime(dateStr: string, timeStr: string): Date {
+  if (timeStr === "00:00") {
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const next = new Date(year, month - 1, day + 1);
+    const y = next.getFullYear();
+    const mo = String(next.getMonth() + 1).padStart(2, '0');
+    const d = String(next.getDate()).padStart(2, '0');
+    return new Date(`${y}-${mo}-${d}T00:00:00-04:00`);
+  }
+  return new Date(`${dateStr}T${timeStr}:00-04:00`);
+}
+
+// Devuelve la fecha en formato YYYYMMDD que ESPN usa para el partido.
+function getEspnDate(dateStr: string, timeStr: string): string {
+  const mt = getMatchTime(dateStr, timeStr);
+  // ESPN indexa los partidos por la fecha en hora del Este (UTC-4)
+  const fmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' });
+  return fmt.format(mt).replace(/-/g, '');
+}
+
 export async function GET() {
   try {
-    // Hora real del sistema
     const now = new Date();
-    // Fechas y horas en base a Venezuela (UTC-4)
     const vzlaFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Caracas', year: 'numeric', month: '2-digit', day: '2-digit' });
     const todayStr = vzlaFormatter.format(now);
     
@@ -173,15 +194,11 @@ export async function GET() {
 
     const todayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === todayStr);
     const todayMatches = await Promise.all(todayMatchesRaw.map(async (m) => {
-      // La fecha del fixture en Venezuela (m.date) determina a qué día pertenece el partido.
-      // Un partido a las 00:00 pertenece al día m.date — NO se desplaza al día siguiente.
-      const matchTime = new Date(`${m.date}T${m.time}:00-04:00`);
+      const matchTime = getMatchTime(m.date, m.time);
 
       if (now > matchTime) {
         const targetTime = matchTime.getTime();
-        // ESPN usa EDT (UTC-4) = misma zona que Venezuela.
-        // La fecha para ESPN es m.date directamente (no se convierte a UTC).
-        const espnDateStr = m.date.replace(/-/g, '');
+        const espnDateStr = getEspnDate(m.date, m.time);
 
         const espnEvents = await getEspnEventsForDate(espnDateStr);
         const event = espnEvents.find((e: any) => new Date(e.date).getTime() === targetTime);
@@ -201,14 +218,9 @@ export async function GET() {
 
     const yesterdayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === yesterdayStr);
     const yesterdayMatches = await Promise.all(yesterdayMatchesRaw.map(async (m) => {
-      // Mismo principio: el partido pertenece al día del fixture (m.date en Venezuela).
-      // La fecha UTC del matchTime se usa para consultar ESPN.
-      const matchTime = new Date(`${m.date}T${m.time}:00-04:00`);
-      
+      const matchTime = getMatchTime(m.date, m.time);
       const targetTime = matchTime.getTime();
-      // ESPN usa EDT (UTC-4) = misma zona que Venezuela.
-      // La fecha para ESPN es m.date directamente (no se convierte a UTC).
-      const espnDateStr = m.date.replace(/-/g, '');
+      const espnDateStr = getEspnDate(m.date, m.time);
 
       const espnEvents = await getEspnEventsForDate(espnDateStr);
       const event = espnEvents.find((e: any) => new Date(e.date).getTime() === targetTime);
@@ -228,11 +240,7 @@ export async function GET() {
 
     const upcomingMatches = OFFICIAL_FIXTURES
       .filter(m => m.date > todayStr)
-      .sort((a, b) => {
-        const ta = new Date(`${a.date}T${a.time}:00-04:00`).getTime();
-        const tb = new Date(`${b.date}T${b.time}:00-04:00`).getTime();
-        return ta - tb;
-      })
+      .sort((a, b) => getMatchTime(a.date, a.time).getTime() - getMatchTime(b.date, b.time).getTime())
       .slice(0, 4)
       .map(m => {
         const [, month, day] = m.date.split('-');
