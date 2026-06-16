@@ -12,7 +12,7 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-13", homeTeam: "Catar",          homeCode: "qa",     awayTeam: "Suiza",           awayCode: "ch",     time: "15:00" },
   { date: "2026-06-13", homeTeam: "Brasil",         homeCode: "br",     awayTeam: "Marruecos",       awayCode: "ma",     time: "18:00" },
   { date: "2026-06-13", homeTeam: "Haití",          homeCode: "ht",     awayTeam: "Escocia",         awayCode: "gb-sct", time: "21:00" },
-  { date: "2026-06-14", homeTeam: "Australia",      homeCode: "au",     awayTeam: "Turquía",         awayCode: "tr",     time: "00:00" }, // 21:00 del 13 en Vancouver
+  { date: "2026-06-13", homeTeam: "Australia",      homeCode: "au",     awayTeam: "Turquía",         awayCode: "tr",     time: "00:00" }, // jornada del 13, kick-off 00:00 del 14 EDT
   // ── 14 de Junio ──
   { date: "2026-06-14", homeTeam: "Alemania",       homeCode: "de",     awayTeam: "Curazao",         awayCode: "cw",     time: "13:00" },
   { date: "2026-06-14", homeTeam: "Países Bajos",   homeCode: "nl",     awayTeam: "Japón",           awayCode: "jp",     time: "16:00" },
@@ -27,7 +27,7 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-16", homeTeam: "Francia",        homeCode: "fr",     awayTeam: "Senegal",         awayCode: "sn",     time: "15:00" },
   { date: "2026-06-16", homeTeam: "Irak",           homeCode: "iq",     awayTeam: "Noruega",         awayCode: "no",     time: "18:00" },
   { date: "2026-06-16", homeTeam: "Argentina",      homeCode: "ar",     awayTeam: "Argelia",         awayCode: "dz",     time: "21:00" },
-  { date: "2026-06-17", homeTeam: "Austria",        homeCode: "at",     awayTeam: "Jordania",        awayCode: "jo",     time: "00:00" }, // 21:00 del 16 en San Francisco
+  { date: "2026-06-16", homeTeam: "Austria",        homeCode: "at",     awayTeam: "Jordania",        awayCode: "jo",     time: "00:00" }, // jornada del 16, kick-off 00:00 del 17 EDT
   // ── 17 de Junio ──
   { date: "2026-06-17", homeTeam: "Portugal",       homeCode: "pt",     awayTeam: "RD Congo",        awayCode: "cd",     time: "13:00" },
   { date: "2026-06-17", homeTeam: "Inglaterra",     homeCode: "gb-eng", awayTeam: "Croacia",         awayCode: "hr",     time: "16:00" },
@@ -91,10 +91,10 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-27", homeTeam: "Argelia",        homeCode: "dz",     awayTeam: "Austria",         awayCode: "at",     time: "22:00" },
   { date: "2026-06-27", homeTeam: "Senegal",        homeCode: "sn",     awayTeam: "Argentina",       awayCode: "ar",     time: "22:00" },
   // ── Grupos adicionales (Fase de Grupos Días 7-9) ──
-  { date: "2026-06-18", homeTeam: "Eslovenia",      homeCode: "si",     awayTeam: "Arabia Saudí",    awayCode: "sa",     time: "00:00" },
-  { date: "2026-06-19", homeTeam: "Cabo Verde",     homeCode: "cv",     awayTeam: "Bélgica",         awayCode: "be",     time: "00:00" },
-  { date: "2026-06-20", homeTeam: "Angola",         homeCode: "ao",     awayTeam: "Portugal",        awayCode: "pt",     time: "00:00" },
-  { date: "2026-06-21", homeTeam: "Curazao",        homeCode: "cw",     awayTeam: "Costa de Marfil", awayCode: "ci",     time: "00:00" },
+  { date: "2026-06-17", homeTeam: "Eslovenia",      homeCode: "si",     awayTeam: "Arabia Saudí",    awayCode: "sa",     time: "00:00" }, // jornada del 17, kick-off 00:00 del 18 EDT
+  { date: "2026-06-18", homeTeam: "Cabo Verde",     homeCode: "cv",     awayTeam: "Bélgica",         awayCode: "be",     time: "00:00" }, // jornada del 18, kick-off 00:00 del 19 EDT
+  { date: "2026-06-19", homeTeam: "Angola",         homeCode: "ao",     awayTeam: "Portugal",        awayCode: "pt",     time: "00:00" }, // jornada del 19, kick-off 00:00 del 20 EDT
+  { date: "2026-06-20", homeTeam: "Curazao",        homeCode: "cw",     awayTeam: "Costa de Marfil", awayCode: "ci",     time: "00:00" }, // jornada del 20, kick-off 00:00 del 21 EDT
   // ── Dieciseisavos de Final (Ronda de 32) ──
   { date: "2026-06-28", homeTeam: "2° Grupo A",     homeCode: "2a",     awayTeam: "2° Grupo B",      awayCode: "2b",     time: "15:00" }, // Partido 73
   { date: "2026-06-29", homeTeam: "1° Grupo E",     homeCode: "1e",     awayTeam: "3° A/B/C/D/F",    awayCode: "3a",     time: "16:30" }, // Partido 74
