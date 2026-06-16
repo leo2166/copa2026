@@ -90,11 +90,6 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-27", homeTeam: "Noruega",        homeCode: "no",     awayTeam: "Irak",            awayCode: "iq",     time: "16:00" },
   { date: "2026-06-27", homeTeam: "Argelia",        homeCode: "dz",     awayTeam: "Austria",         awayCode: "at",     time: "22:00" },
   { date: "2026-06-27", homeTeam: "Senegal",        homeCode: "sn",     awayTeam: "Argentina",       awayCode: "ar",     time: "22:00" },
-  // ── Grupos adicionales (Fase de Grupos Días 7-9) ──
-  { date: "2026-06-17", homeTeam: "Eslovenia",      homeCode: "si",     awayTeam: "Arabia Saudí",    awayCode: "sa",     time: "00:00" }, // jornada del 17, kick-off 00:00 del 18 EDT
-  { date: "2026-06-18", homeTeam: "Cabo Verde",     homeCode: "cv",     awayTeam: "Bélgica",         awayCode: "be",     time: "00:00" }, // jornada del 18, kick-off 00:00 del 19 EDT
-  { date: "2026-06-19", homeTeam: "Angola",         homeCode: "ao",     awayTeam: "Portugal",        awayCode: "pt",     time: "00:00" }, // jornada del 19, kick-off 00:00 del 20 EDT
-  { date: "2026-06-20", homeTeam: "Curazao",        homeCode: "cw",     awayTeam: "Costa de Marfil", awayCode: "ci",     time: "00:00" }, // jornada del 20, kick-off 00:00 del 21 EDT
   // ── Dieciseisavos de Final (Ronda de 32) ──
   { date: "2026-06-28", homeTeam: "2° Grupo A",     homeCode: "2a",     awayTeam: "2° Grupo B",      awayCode: "2b",     time: "15:00" }, // Partido 73
   { date: "2026-06-29", homeTeam: "1° Grupo E",     homeCode: "1e",     awayTeam: "3° A/B/C/D/F",    awayCode: "3a",     time: "16:30" }, // Partido 74
