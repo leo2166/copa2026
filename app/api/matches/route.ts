@@ -1,3 +1,6 @@
+// Forzar renderización dinámica en cada petición (sin caché estática de Next.js)
+export const dynamic = 'force-dynamic';
+
 // ─── Fixture completo Fase de Grupos — Mundial 2026 ───────────────────────────
 // Todos los horarios en hora de Venezuela (VZT = UTC-4 = EDT verano EE.UU.)
 // Un partido a las 00:00 pertenece al día anterior en la lógica de programación/transmisión.
@@ -39,10 +42,10 @@ const OFFICIAL_FIXTURES = [
   { date: "2026-06-18", homeTeam: "Canadá",         homeCode: "ca",     awayTeam: "Catar",           awayCode: "qa",     time: "18:00" },
   { date: "2026-06-18", homeTeam: "México",         homeCode: "mx",     awayTeam: "Rep. de Corea",   awayCode: "kr",     time: "21:00" },
   // ── 19 de Junio ──
-  { date: "2026-06-19", homeTeam: "Escocia",        homeCode: "gb-sct", awayTeam: "Marruecos",       awayCode: "ma",     time: "12:00" },
-  { date: "2026-06-19", homeTeam: "Brasil",         homeCode: "br",     awayTeam: "Haití",           awayCode: "ht",     time: "15:00" },
-  { date: "2026-06-19", homeTeam: "Turquía",        homeCode: "tr",     awayTeam: "Paraguay",        awayCode: "py",     time: "18:00" },
-  { date: "2026-06-19", homeTeam: "Estados Unidos", homeCode: "us",     awayTeam: "Australia",       awayCode: "au",     time: "21:00" },
+  { date: "2026-06-19", homeTeam: "Escocia",        homeCode: "gb-sct", awayTeam: "Marruecos",       awayCode: "ma",     time: "18:00" },
+  { date: "2026-06-19", homeTeam: "Brasil",         homeCode: "br",     awayTeam: "Haití",           awayCode: "ht",     time: "20:30" },
+  { date: "2026-06-19", homeTeam: "Turquía",        homeCode: "tr",     awayTeam: "Paraguay",        awayCode: "py",     time: "23:00" },
+  { date: "2026-06-19", homeTeam: "Estados Unidos", homeCode: "us",     awayTeam: "Australia",       awayCode: "au",     time: "15:00" },
   // ── 20 de Junio ──
   { date: "2026-06-20", homeTeam: "Japón",          homeCode: "jp",     awayTeam: "Túnez",           awayCode: "tn",     time: "12:00" },
   { date: "2026-06-20", homeTeam: "Alemania",       homeCode: "de",     awayTeam: "Suecia",          awayCode: "se",     time: "15:00" },
