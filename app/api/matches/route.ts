@@ -190,7 +190,9 @@ export async function GET() {
       return events;
     }
 
-    const todayMatchesRaw = OFFICIAL_FIXTURES.filter(m => m.date === todayStr);
+    const todayMatchesRaw = OFFICIAL_FIXTURES
+      .filter(m => m.date === todayStr)
+      .sort((a, b) => getMatchTime(a.date, a.time).getTime() - getMatchTime(b.date, b.time).getTime());
     const todayMatches = await Promise.all(todayMatchesRaw.map(async (m) => {
       const matchTime = getMatchTime(m.date, m.time);
 
