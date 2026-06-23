@@ -1,0 +1,737 @@
+{
+  "timestamp": 1782256920893,
+  "data": [
+    {
+      "groupName": "Grupo A",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "México",
+          "code": "mx",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/mex.png",
+          "played": 2,
+          "wins": 2,
+          "draws": 0,
+          "losses": 0,
+          "goalsFor": 3,
+          "goalsAgainst": 0,
+          "goalDifference": 3,
+          "points": 6
+        },
+        {
+          "rank": 2,
+          "name": "Rep. de Corea",
+          "code": "kr",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/kors.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 0,
+          "losses": 1,
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "goalDifference": 0,
+          "points": 3
+        },
+        {
+          "rank": 3,
+          "name": "Rep. Checa",
+          "code": "cz",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/cze.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 1,
+          "losses": 1,
+          "goalsFor": 2,
+          "goalsAgainst": 3,
+          "goalDifference": -1,
+          "points": 1
+        },
+        {
+          "rank": 4,
+          "name": "Sudáfrica",
+          "code": "za",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/rsa.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 1,
+          "losses": 1,
+          "goalsFor": 1,
+          "goalsAgainst": 3,
+          "goalDifference": -2,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo B",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Canadá",
+          "code": "ca",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/can.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 7,
+          "goalsAgainst": 1,
+          "goalDifference": 6,
+          "points": 4
+        },
+        {
+          "rank": 2,
+          "name": "Suiza",
+          "code": "ch",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/sui.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 5,
+          "goalsAgainst": 2,
+          "goalDifference": 3,
+          "points": 4
+        },
+        {
+          "rank": 3,
+          "name": "Bosnia y Herz.",
+          "code": "ba",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/bih.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 1,
+          "losses": 1,
+          "goalsFor": 2,
+          "goalsAgainst": 5,
+          "goalDifference": -3,
+          "points": 1
+        },
+        {
+          "rank": 4,
+          "name": "Catar",
+          "code": "qa",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/qat.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 1,
+          "losses": 1,
+          "goalsFor": 1,
+          "goalsAgainst": 7,
+          "goalDifference": -6,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo C",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Brasil",
+          "code": "br",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/bra.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 4,
+          "goalsAgainst": 1,
+          "goalDifference": 3,
+          "points": 4
+        },
+        {
+          "rank": 2,
+          "name": "Marruecos",
+          "code": "ma",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/mar.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "goalDifference": 1,
+          "points": 4
+        },
+        {
+          "rank": 3,
+          "name": "Escocia",
+          "code": "gb-sct",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/sco.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 0,
+          "losses": 1,
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "goalDifference": 0,
+          "points": 3
+        },
+        {
+          "rank": 4,
+          "name": "Haití",
+          "code": "ht",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/hai.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 0,
+          "losses": 2,
+          "goalsFor": 0,
+          "goalsAgainst": 4,
+          "goalDifference": -4,
+          "points": 0
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo D",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Estados Unidos",
+          "code": "us",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/usa.png",
+          "played": 2,
+          "wins": 2,
+          "draws": 0,
+          "losses": 0,
+          "goalsFor": 6,
+          "goalsAgainst": 1,
+          "goalDifference": 5,
+          "points": 6
+        },
+        {
+          "rank": 2,
+          "name": "Australia",
+          "code": "au",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/aus.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 0,
+          "losses": 1,
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "goalDifference": 0,
+          "points": 3
+        },
+        {
+          "rank": 3,
+          "name": "Paraguay",
+          "code": "py",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/par.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 0,
+          "losses": 1,
+          "goalsFor": 2,
+          "goalsAgainst": 4,
+          "goalDifference": -2,
+          "points": 3
+        },
+        {
+          "rank": 4,
+          "name": "Turquía",
+          "code": "tr",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/tur.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 0,
+          "losses": 2,
+          "goalsFor": 0,
+          "goalsAgainst": 3,
+          "goalDifference": -3,
+          "points": 0
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo E",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Alemania",
+          "code": "de",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/ger.png",
+          "played": 2,
+          "wins": 2,
+          "draws": 0,
+          "losses": 0,
+          "goalsFor": 9,
+          "goalsAgainst": 2,
+          "goalDifference": 7,
+          "points": 6
+        },
+        {
+          "rank": 2,
+          "name": "Costa de Marfil",
+          "code": "ci",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/civ.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 0,
+          "losses": 1,
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "goalDifference": 0,
+          "points": 3
+        },
+        {
+          "rank": 3,
+          "name": "Ecuador",
+          "code": "ec",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/ecu.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 1,
+          "losses": 1,
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "goalDifference": -1,
+          "points": 1
+        },
+        {
+          "rank": 4,
+          "name": "Curazao",
+          "code": "cw",
+          "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/11678.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 1,
+          "losses": 1,
+          "goalsFor": 1,
+          "goalsAgainst": 7,
+          "goalDifference": -6,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo F",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Países Bajos",
+          "code": "nl",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/ned.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 7,
+          "goalsAgainst": 3,
+          "goalDifference": 4,
+          "points": 4
+        },
+        {
+          "rank": 2,
+          "name": "Japón",
+          "code": "jp",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/jpn.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 6,
+          "goalsAgainst": 2,
+          "goalDifference": 4,
+          "points": 4
+        },
+        {
+          "rank": 3,
+          "name": "Suecia",
+          "code": "se",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/swe.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 0,
+          "losses": 1,
+          "goalsFor": 6,
+          "goalsAgainst": 6,
+          "goalDifference": 0,
+          "points": 3
+        },
+        {
+          "rank": 4,
+          "name": "Túnez",
+          "code": "tn",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/tun.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 0,
+          "losses": 2,
+          "goalsFor": 1,
+          "goalsAgainst": 9,
+          "goalDifference": -8,
+          "points": 0
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo G",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Egipto",
+          "code": "eg",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/egy.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 4,
+          "goalsAgainst": 2,
+          "goalDifference": 2,
+          "points": 4
+        },
+        {
+          "rank": 2,
+          "name": "RI de Irán",
+          "code": "ir",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/irn.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 2,
+          "losses": 0,
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "goalDifference": 0,
+          "points": 2
+        },
+        {
+          "rank": 3,
+          "name": "Bélgica",
+          "code": "be",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/bel.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 2,
+          "losses": 0,
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "goalDifference": 0,
+          "points": 2
+        },
+        {
+          "rank": 4,
+          "name": "Nueva Zelanda",
+          "code": "nz",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/nzl.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 1,
+          "losses": 1,
+          "goalsFor": 3,
+          "goalsAgainst": 5,
+          "goalDifference": -2,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo H",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "España",
+          "code": "es",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/esp.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 4,
+          "goalsAgainst": 0,
+          "goalDifference": 4,
+          "points": 4
+        },
+        {
+          "rank": 2,
+          "name": "Uruguay",
+          "code": "uy",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/uru.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 2,
+          "losses": 0,
+          "goalsFor": 3,
+          "goalsAgainst": 3,
+          "goalDifference": 0,
+          "points": 2
+        },
+        {
+          "rank": 3,
+          "name": "Cabo Verde",
+          "code": "cv",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/cpv.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 2,
+          "losses": 0,
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "goalDifference": 0,
+          "points": 2
+        },
+        {
+          "rank": 4,
+          "name": "Arabia Saudí",
+          "code": "sa",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/ksa.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 1,
+          "losses": 1,
+          "goalsFor": 1,
+          "goalsAgainst": 5,
+          "goalDifference": -4,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo I",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Francia",
+          "code": "fr",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/fra.png",
+          "played": 2,
+          "wins": 2,
+          "draws": 0,
+          "losses": 0,
+          "goalsFor": 6,
+          "goalsAgainst": 1,
+          "goalDifference": 5,
+          "points": 6
+        },
+        {
+          "rank": 2,
+          "name": "Noruega",
+          "code": "no",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/nor.png",
+          "played": 2,
+          "wins": 2,
+          "draws": 0,
+          "losses": 0,
+          "goalsFor": 7,
+          "goalsAgainst": 3,
+          "goalDifference": 4,
+          "points": 6
+        },
+        {
+          "rank": 3,
+          "name": "Senegal",
+          "code": "sn",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/sen.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 0,
+          "losses": 2,
+          "goalsFor": 3,
+          "goalsAgainst": 6,
+          "goalDifference": -3,
+          "points": 0
+        },
+        {
+          "rank": 4,
+          "name": "Irak",
+          "code": "iq",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/irq.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 0,
+          "losses": 2,
+          "goalsFor": 1,
+          "goalsAgainst": 7,
+          "goalDifference": -6,
+          "points": 0
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo J",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Argentina",
+          "code": "ar",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/arg.png",
+          "played": 2,
+          "wins": 2,
+          "draws": 0,
+          "losses": 0,
+          "goalsFor": 5,
+          "goalsAgainst": 0,
+          "goalDifference": 5,
+          "points": 6
+        },
+        {
+          "rank": 2,
+          "name": "Austria",
+          "code": "at",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/aut.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 0,
+          "losses": 1,
+          "goalsFor": 3,
+          "goalsAgainst": 3,
+          "goalDifference": 0,
+          "points": 3
+        },
+        {
+          "rank": 3,
+          "name": "Argelia",
+          "code": "dz",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/alg.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 0,
+          "losses": 1,
+          "goalsFor": 2,
+          "goalsAgainst": 4,
+          "goalDifference": -2,
+          "points": 3
+        },
+        {
+          "rank": 4,
+          "name": "Jordania",
+          "code": "jo",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/jor.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 0,
+          "losses": 2,
+          "goalsFor": 2,
+          "goalsAgainst": 5,
+          "goalDifference": -3,
+          "points": 0
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo K",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Portugal",
+          "code": "pt",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/por.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 6,
+          "goalsAgainst": 1,
+          "goalDifference": 5,
+          "points": 4
+        },
+        {
+          "rank": 2,
+          "name": "Colombia",
+          "code": "co",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/col.png",
+          "played": 1,
+          "wins": 1,
+          "draws": 0,
+          "losses": 0,
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "goalDifference": 2,
+          "points": 3
+        },
+        {
+          "rank": 3,
+          "name": "RD Congo",
+          "code": "cd",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/rdc.png",
+          "played": 1,
+          "wins": 0,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "goalDifference": 0,
+          "points": 1
+        },
+        {
+          "rank": 4,
+          "name": "Uzbekistán",
+          "code": "uz",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/uzb.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 0,
+          "losses": 2,
+          "goalsFor": 1,
+          "goalsAgainst": 8,
+          "goalDifference": -7,
+          "points": 0
+        }
+      ]
+    },
+    {
+      "groupName": "Grupo L",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Inglaterra",
+          "code": "gb-eng",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/eng.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 4,
+          "goalsAgainst": 2,
+          "goalDifference": 2,
+          "points": 4
+        },
+        {
+          "rank": 2,
+          "name": "Ghana",
+          "code": "gh",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/gha.png",
+          "played": 2,
+          "wins": 1,
+          "draws": 1,
+          "losses": 0,
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "goalDifference": 1,
+          "points": 4
+        },
+        {
+          "rank": 3,
+          "name": "Panamá",
+          "code": "pa",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/pan.png",
+          "played": 1,
+          "wins": 0,
+          "draws": 0,
+          "losses": 1,
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "goalDifference": -1,
+          "points": 0
+        },
+        {
+          "rank": 4,
+          "name": "Croacia",
+          "code": "hr",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/cro.png",
+          "played": 1,
+          "wins": 0,
+          "draws": 0,
+          "losses": 1,
+          "goalsFor": 2,
+          "goalsAgainst": 4,
+          "goalDifference": -2,
+          "points": 0
+        }
+      ]
+    }
+  ]
+}

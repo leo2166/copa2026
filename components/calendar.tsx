@@ -1,9 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import Image from "next/image"
 import { TodayPanel, ResultsPanel, UpcomingPanel } from "@/components/panels"
-import { Loader2, RefreshCw, Trophy } from "lucide-react"
+import { Loader2, RefreshCw, Trophy, LayoutGrid } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { StandingsModal } from "@/components/standings-modal"
 
 import { useMatches } from "@/hooks/useMatches"
 import useSWR from "swr"
@@ -41,6 +43,7 @@ async function fetcher<T>(url: string): Promise<T> {
 
 export function Calendar() {
   const { mounted, data, error, isLoading, mutate, isValidating } = useMatches()
+  const [isStandingsOpen, setIsStandingsOpen] = useState(false)
 
   // Resultados en vivo – refresca cada 30 s, deduplicando peticiones en 10 s
   const {
@@ -97,14 +100,23 @@ export function Calendar() {
         </div>
       )}
 
-      {/* Botón actualizar */}
-      <div className="mx-auto mb-8 flex max-w-xs items-center justify-center">
+      {/* Botones de control */}
+      <div className="mx-auto mb-8 flex max-w-md flex-wrap items-center justify-center gap-3 px-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsStandingsOpen(true)}
+          className="gap-2 border-primary/40 bg-primary/20 hover:bg-primary/30 text-foreground shadow-sm shadow-primary/5 transition-all hover:scale-105 active:scale-95"
+        >
+          <LayoutGrid className="size-4 text-primary animate-pulse" />
+          Fase de Grupos
+        </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => mutate()}
           disabled={isValidating}
-          className="gap-2 border-primary/40 bg-card/60 text-foreground hover:bg-secondary"
+          className="gap-2 border-primary/40 bg-card/60 text-foreground hover:bg-secondary transition-all hover:scale-105 active:scale-95"
         >
           <RefreshCw className={`size-4 ${isValidating ? "animate-spin" : ""}`} />
           Actualizar datos
@@ -152,6 +164,8 @@ export function Calendar() {
         </p>
       </div>
 
+      {/* Modal de Clasificación */}
+      <StandingsModal isOpen={isStandingsOpen} onClose={() => setIsStandingsOpen(false)} />
     </div>
   )
 }
