@@ -145,7 +145,6 @@ async function updateStandingsCache(): Promise<any> {
 
   try {
     const res = await fetch('https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings', {
-      next: { revalidate: 0 },
       cache: 'no-store',
       signal: controller.signal
     });
