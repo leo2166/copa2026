@@ -136,6 +136,46 @@ const CACHE_FILE = path.join(process.cwd(), 'data', 'standings-cache.json');
 const CACHE_DURATION = 5 * 60 * 1000;
 let isUpdating = false;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CORRECCIONES MANUALES: Se aplican SOBRE los datos de ESPN cuando la API
+// externa tarda en actualizar sus cachés. Borrar una entrada cuando ESPN
+// ya refleje los datos reales.
+// ─────────────────────────────────────────────────────────────────────────────
+type TeamCorrection = {
+  rank: number; played: number; wins: number; draws: number; losses: number;
+  goalsFor: number; goalsAgainst: number; goalDifference: number; points: number;
+};
+const GROUP_CORRECTIONS: Record<string, Record<string, TeamCorrection>> = {
+  "Grupo L": {
+    "Croacia":  { rank: 3, played: 2, wins: 1, draws: 0, losses: 1, goalsFor: 3, goalsAgainst: 4, goalDifference: -1, points: 3 },
+    "Panamá":   { rank: 4, played: 2, wins: 0, draws: 0, losses: 2, goalsFor: 0, goalsAgainst: 2, goalDifference: -2, points: 0 },
+  },
+};
+
+function applyCorrections(standings: any[]): any[] {
+  return standings.map(group => {
+    const corrections = GROUP_CORRECTIONS[group.groupName];
+    if (!corrections) return group;
+
+    const correctedTeams = group.teams.map((t: any) => {
+      if (corrections[t.name]) {
+        return { ...t, ...corrections[t.name] };
+      }
+      return t;
+    });
+
+    // Re-ordenar con los datos corregidos
+    correctedTeams.sort((a: any, b: any) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+      return b.goalsFor - a.goalsFor;
+    });
+    correctedTeams.forEach((t: any, i: number) => { t.rank = i + 1; });
+
+    return { ...group, teams: correctedTeams };
+  });
+}
+
 async function updateStandingsCache(): Promise<any> {
   if (isUpdating) return null;
   isUpdating = true;
@@ -144,8 +184,14 @@ async function updateStandingsCache(): Promise<any> {
   const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 segundos de timeout
 
   try {
-    const res = await fetch('https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings', {
+    // Añadir timestamp para romper la caché CDN de ESPN
+    const espnUrl = `https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings?_=${Date.now()}`;
+    const res = await fetch(espnUrl, {
       cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+      },
       signal: controller.signal
     });
     clearTimeout(timeoutId);
@@ -208,7 +254,9 @@ async function updateStandingsCache(): Promise<any> {
       };
     });
 
-    if (standings && standings.length > 0) {
+    const correctedStandings = applyCorrections(standings);
+
+    if (correctedStandings && correctedStandings.length > 0) {
       const dir = path.dirname(CACHE_FILE);
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
@@ -216,11 +264,11 @@ async function updateStandingsCache(): Promise<any> {
 
       const cacheData = {
         timestamp: Date.now(),
-        data: standings
+        data: correctedStandings
       };
       fs.writeFileSync(CACHE_FILE, JSON.stringify(cacheData, null, 2), 'utf-8');
       console.log("Caché de standings en disco actualizada con éxito.");
-      return standings;
+      return correctedStandings;
     }
     return null;
   } catch (error) {
