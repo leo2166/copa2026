@@ -135,6 +135,7 @@ function getTeamDetails(abbreviation?: string, displayName?: string): { name: st
 const CACHE_FILE = path.join(process.cwd(), 'data', 'standings-cache.json');
 const CACHE_DURATION = 5 * 60 * 1000;
 let isUpdating = false;
+let memoryCache: { timestamp: number; data: any } | null = null;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CORRECCIONES MANUALES: Se aplican SOBRE los datos de ESPN cuando la API
@@ -257,17 +258,27 @@ async function updateStandingsCache(): Promise<any> {
     const correctedStandings = applyCorrections(standings);
 
     if (correctedStandings && correctedStandings.length > 0) {
-      const dir = path.dirname(CACHE_FILE);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-      }
-
-      const cacheData = {
+      // Actualizar caché en memoria
+      memoryCache = {
         timestamp: Date.now(),
         data: correctedStandings
       };
-      fs.writeFileSync(CACHE_FILE, JSON.stringify(cacheData, null, 2), 'utf-8');
-      console.log("Caché de standings en disco actualizada con éxito.");
+
+      // Intentar actualizar caché en disco de forma segura (fallará en Vercel, pero se captura silenciosamente)
+      try {
+        const dir = path.dirname(CACHE_FILE);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+        const cacheData = {
+          timestamp: Date.now(),
+          data: correctedStandings
+        };
+        fs.writeFileSync(CACHE_FILE, JSON.stringify(cacheData, null, 2), 'utf-8');
+        console.log("Caché de standings en disco actualizada con éxito.");
+      } catch (writeError) {
+        console.warn("No se pudo escribir la caché en disco (normal en Vercel Serverless):", writeError);
+      }
       return correctedStandings;
     }
     return null;
@@ -282,40 +293,61 @@ async function updateStandingsCache(): Promise<any> {
 
 export async function GET() {
   const now = Date.now();
+  
+  // 0. Si hay caché en memoria fresca, responder de inmediato (< 1ms)
+  if (memoryCache && (now - memoryCache.timestamp < CACHE_DURATION)) {
+    console.log("Sirviendo clasificación desde caché en memoria fresca...");
+    return Response.json(memoryCache.data, {
+      headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' }
+    });
+  }
+
   let cachedData: { timestamp: number; data: any } | null = null;
 
   try {
     if (fs.existsSync(CACHE_FILE)) {
       const rawFile = fs.readFileSync(CACHE_FILE, 'utf-8');
       cachedData = JSON.parse(rawFile);
+      // Al alimentar la caché en memoria por primera vez desde el disco
+      if (cachedData && !memoryCache) {
+        memoryCache = cachedData;
+      }
     }
   } catch (e) {
     console.error("Error al leer la caché de standings en disco:", e);
   }
 
-  // 1. Si hay caché fresca, responder de inmediato (< 20ms)
+  // 1. Si hay caché fresca en disco (y no estaba en memoria), responder de inmediato
   if (cachedData && (now - cachedData.timestamp < CACHE_DURATION)) {
-    return Response.json(cachedData.data);
+    return Response.json(cachedData.data, {
+      headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' }
+    });
   }
 
-  // 2. Si la caché expiró, intentar actualización síncrona para asegurar que el cliente tenga datos reales de inmediato
+  // 2. Si la caché expiró, intentar actualización síncrona
   if (cachedData) {
     console.log("Caché expirada. Iniciando actualización síncrona...");
     const freshData = await updateStandingsCache();
     if (freshData) {
-      return Response.json(freshData);
+      return Response.json(freshData, {
+        headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' }
+      });
     }
-    // Si falla el fetch síncrono a ESPN, servimos la caché vieja de inmediato como contingencia (no bloquea al cliente)
+    // Si falla el fetch síncrono, servimos la caché vieja de inmediato como contingencia
     console.warn("Fallo al actualizar de ESPN de forma síncrona. Devolviendo caché expirada...");
-    return Response.json(cachedData.data);
+    return Response.json(cachedData.data, {
+      headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' }
+    });
   }
 
   // 3. Si no hay caché en absoluto, fetch síncrono inicial
-  console.log("No se encontró caché en disco. Realizando fetch inicial síncrono...");
+  console.log("No se encontró caché. Realizando fetch inicial síncrono...");
   const data = await updateStandingsCache();
   
   if (data) {
-    return Response.json(data);
+    return Response.json(data, {
+      headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' }
+    });
   }
 
   // 4. Si falla todo y no hay nada en caché, contingencia con backup de scratch
@@ -363,15 +395,31 @@ export async function GET() {
       });
 
       if (standings.length > 0) {
-        const dir = path.dirname(CACHE_FILE);
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-        fs.writeFileSync(CACHE_FILE, JSON.stringify({ timestamp: Date.now(), data: standings }, null, 2), 'utf-8');
-        return Response.json(standings);
+        // Guardar en memoria
+        memoryCache = { timestamp: Date.now(), data: standings };
+        
+        // Intentar escribir en disco
+        try {
+          const dir = path.dirname(CACHE_FILE);
+          if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+          fs.writeFileSync(CACHE_FILE, JSON.stringify({ timestamp: Date.now(), data: standings }, null, 2), 'utf-8');
+        } catch (writeError) {
+          console.warn("No se pudo escribir la caché de respaldo en disco:", writeError);
+        }
+        return Response.json(standings, {
+          headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' }
+        });
       }
     }
   } catch (backupError) {
     console.error("Error al procesar el archivo de respaldo de scratch:", backupError);
   }
 
-  return Response.json({ error: 'Error al procesar la clasificación inicial.' }, { status: 500 });
+  return Response.json(
+    { error: 'Error al procesar la clasificación inicial.' },
+    {
+      status: 500,
+      headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' }
+    }
+  );
 }
