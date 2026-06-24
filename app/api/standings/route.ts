@@ -191,7 +191,16 @@ async function updateStandingsCache(): Promise<any> {
         };
       });
 
-      teams.sort((a: any, b: any) => a.rank - b.rank);
+      // Ordenar por criterios FIFA: puntos → diferencia de goles → goles a favor
+      // (No confiamos en el campo `rank` de ESPN que puede estar desactualizado)
+      teams.sort((a: any, b: any) => {
+        if (b.points !== a.points) return b.points - a.points;
+        if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+        return b.goalsFor - a.goalsFor;
+      });
+
+      // Reasignar el rank según el orden correcto calculado
+      teams.forEach((t: any, i: number) => { t.rank = i + 1; });
 
       return {
         groupName: translatedGroupName,
