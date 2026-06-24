@@ -140,11 +140,16 @@ async function updateStandingsCache(): Promise<any> {
   if (isUpdating) return null;
   isUpdating = true;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 segundos de timeout
+
   try {
     const res = await fetch('https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings', {
       next: { revalidate: 0 },
-      cache: 'no-store'
+      cache: 'no-store',
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
 
     if (!res.ok) {
       throw new Error(`Error en API externa: ${res.status}`);
@@ -211,6 +216,7 @@ async function updateStandingsCache(): Promise<any> {
     }
     return null;
   } catch (error) {
+    clearTimeout(timeoutId);
     console.error("Error al actualizar la caché de standings:", error);
     return null;
   } finally {
@@ -231,16 +237,24 @@ export async function GET() {
     console.error("Error al leer la caché de standings en disco:", e);
   }
 
+  // 1. Si hay caché fresca, responder de inmediato (< 20ms)
   if (cachedData && (now - cachedData.timestamp < CACHE_DURATION)) {
     return Response.json(cachedData.data);
   }
 
+  // 2. Si la caché expiró, intentar actualización síncrona para asegurar que el cliente tenga datos reales de inmediato
   if (cachedData) {
-    console.log("Caché expirada. Iniciando actualización en segundo plano...");
-    updateStandingsCache();
+    console.log("Caché expirada. Iniciando actualización síncrona...");
+    const freshData = await updateStandingsCache();
+    if (freshData) {
+      return Response.json(freshData);
+    }
+    // Si falla el fetch síncrono a ESPN, servimos la caché vieja de inmediato como contingencia (no bloquea al cliente)
+    console.warn("Fallo al actualizar de ESPN de forma síncrona. Devolviendo caché expirada...");
     return Response.json(cachedData.data);
   }
 
+  // 3. Si no hay caché en absoluto, fetch síncrono inicial
   console.log("No se encontró caché en disco. Realizando fetch inicial síncrono...");
   const data = await updateStandingsCache();
   
@@ -248,10 +262,11 @@ export async function GET() {
     return Response.json(data);
   }
 
+  // 4. Si falla todo y no hay nada en caché, contingencia con backup de scratch
   try {
     const backupPath = path.join(process.cwd(), 'scratch', 'test-standings.json');
     if (fs.existsSync(backupPath)) {
-      console.warn("Usando archivo de respaldo de scratch debido a fallo en fetch inicial...");
+      console.warn("Usando archivo de respaldo de scratch debido a fallo total en fetch inicial...");
       const rawBackup = fs.readFileSync(backupPath, 'utf-8');
       const backupJson = JSON.parse(rawBackup);
       
