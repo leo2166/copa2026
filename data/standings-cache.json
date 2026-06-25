@@ -1,5 +1,5 @@
 {
-  "timestamp": 1782256920893,
+  "timestamp": 1782315060100,
   "data": [
     {
       "groupName": "Grupo A",
@@ -616,6 +616,20 @@
       "teams": [
         {
           "rank": 1,
+          "name": "Colombia",
+          "code": "co",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/col.png",
+          "played": 2,
+          "wins": 2,
+          "draws": 0,
+          "losses": 0,
+          "goalsFor": 4,
+          "goalsAgainst": 1,
+          "goalDifference": 3,
+          "points": 6
+        },
+        {
+          "rank": 2,
           "name": "Portugal",
           "code": "pt",
           "logo": "https://a.espncdn.com/i/teamlogos/countries/500/por.png",
@@ -629,31 +643,17 @@
           "points": 4
         },
         {
-          "rank": 2,
-          "name": "Colombia",
-          "code": "co",
-          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/col.png",
-          "played": 1,
-          "wins": 1,
-          "draws": 0,
-          "losses": 0,
-          "goalsFor": 3,
-          "goalsAgainst": 1,
-          "goalDifference": 2,
-          "points": 3
-        },
-        {
           "rank": 3,
           "name": "RD Congo",
           "code": "cd",
           "logo": "https://a.espncdn.com/i/teamlogos/countries/500/rdc.png",
-          "played": 1,
+          "played": 2,
           "wins": 0,
           "draws": 1,
-          "losses": 0,
+          "losses": 1,
           "goalsFor": 1,
-          "goalsAgainst": 1,
-          "goalDifference": 0,
+          "goalsAgainst": 2,
+          "goalDifference": -1,
           "points": 1
         },
         {
@@ -705,29 +705,29 @@
         },
         {
           "rank": 3,
-          "name": "Panamá",
-          "code": "pa",
-          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/pan.png",
-          "played": 1,
-          "wins": 0,
-          "draws": 0,
-          "losses": 1,
-          "goalsFor": 0,
-          "goalsAgainst": 1,
-          "goalDifference": -1,
-          "points": 0
-        },
-        {
-          "rank": 4,
           "name": "Croacia",
           "code": "hr",
           "logo": "https://a.espncdn.com/i/teamlogos/countries/500/cro.png",
-          "played": 1,
-          "wins": 0,
+          "played": 2,
+          "wins": 1,
           "draws": 0,
           "losses": 1,
-          "goalsFor": 2,
+          "goalsFor": 3,
           "goalsAgainst": 4,
+          "goalDifference": -1,
+          "points": 3
+        },
+        {
+          "rank": 4,
+          "name": "Panamá",
+          "code": "pa",
+          "logo": "https://a.espncdn.com/i/teamlogos/countries/500/pan.png",
+          "played": 2,
+          "wins": 0,
+          "draws": 0,
+          "losses": 2,
+          "goalsFor": 0,
+          "goalsAgainst": 2,
           "goalDifference": -2,
           "points": 0
         }

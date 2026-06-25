@@ -3,9 +3,11 @@
 import { useState } from "react"
 import Image from "next/image"
 import { TodayPanel, ResultsPanel, UpcomingPanel } from "@/components/panels"
-import { Loader2, RefreshCw, Trophy, LayoutGrid } from "lucide-react"
+import { Loader2, RefreshCw, Trophy, LayoutGrid, CalendarRange } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { StandingsModal } from "@/components/standings-modal"
+import { BracketView } from "@/components/bracket-view"
+import { cn } from "@/lib/utils"
 
 import { useMatches } from "@/hooks/useMatches"
 import useSWR from "swr"
@@ -44,6 +46,7 @@ async function fetcher<T>(url: string): Promise<T> {
 export function Calendar() {
   const { mounted, data, error, isLoading, mutate, isValidating } = useMatches()
   const [isStandingsOpen, setIsStandingsOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<"daily" | "elimination">("daily")
 
   // Resultados en vivo – refresca cada 30 s, deduplicando peticiones en 10 s
   const {
@@ -63,44 +66,49 @@ export function Calendar() {
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:py-12 animate-fade-in">
 
-      <header className="flex items-center justify-center gap-4 mb-8">
-        <h1 className="text-balance text-center bg-gradient-to-b from-primary to-primary/70 bg-clip-text text-3xl font-extrabold uppercase tracking-wide text-transparent sm:text-4xl md:text-5xl">
-          Calendario Mundial 2026
-        </h1>
-        <Trophy className="hidden size-10 text-primary sm:block" aria-hidden />
+      <header className="flex flex-col items-center justify-center gap-2 mb-8 text-center">
+        <div className="flex items-center gap-3">
+          <Trophy className="size-8 text-primary sm:size-10" aria-hidden />
+          <h1 className="text-balance bg-gradient-to-b from-primary via-primary to-primary/75 bg-clip-text text-3xl font-black uppercase tracking-wider text-transparent sm:text-4xl md:text-5xl">
+            Mundial 2026
+          </h1>
+        </div>
+        <p className="text-xs sm:text-sm text-muted-foreground font-semibold tracking-wide uppercase">
+          Seguimiento Oficial de Partidos y Resultados
+        </p>
       </header>
 
-      {/* Resultados en vivo FIFA */}
-      {liveLoading && (
-        <div className="flex flex-col items-center py-4 text-muted-foreground">
-          <Loader2 className="size-6 animate-spin" />
-          <p className="text-sm">Cargando resultados en vivo...</p>
+      {/* Selector de Pestañas Principal */}
+      <div className="flex justify-center mb-8">
+        <div className="flex bg-card/45 border border-border/50 rounded-2xl p-1 backdrop-blur-md shadow-lg shadow-black/10">
+          <button
+            onClick={() => setActiveTab("daily")}
+            className={cn(
+              "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all duration-300",
+              activeTab === "daily"
+                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <CalendarRange className="size-4" />
+            Partidos Diarios
+          </button>
+          <button
+            onClick={() => setActiveTab("elimination")}
+            className={cn(
+              "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all duration-300",
+              activeTab === "elimination"
+                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <Trophy className="size-4" />
+            Fase Eliminatoria
+          </button>
         </div>
-      )}
+      </div>
 
-      {liveError && (
-        <div className="mx-auto max-w-xl rounded-2xl border border-destructive/40 bg-card/60 p-4 text-center text-destructive">
-          <p className="text-sm">Error al cargar los resultados en vivo.</p>
-        </div>
-      )}
-
-      {(liveData?.matches?.length ?? 0) > 0 && (
-        <div className="mt-6 mb-6 flex flex-col gap-4">
-          <h2 className="text-xl font-semibold text-primary">Resultados en vivo</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            {liveData!.matches.map((m, idx) => (
-              <div key={idx} className="rounded-lg border p-3 bg-card/60">
-                <p className="font-medium">{m.homeTeam} vs {m.awayTeam}</p>
-                <p className="text-sm text-muted-foreground">
-                  {m.homeScore} - {m.awayScore} ({m.minute ?? "0"}&apos;)
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Botones de control */}
+      {/* Botones de control flotantes/secundarios */}
       <div className="mx-auto mb-8 flex max-w-md flex-wrap items-center justify-center gap-3 px-4">
         <Button
           variant="outline"
@@ -108,45 +116,88 @@ export function Calendar() {
           onClick={() => setIsStandingsOpen(true)}
           className="gap-2 border-primary/40 bg-primary/20 hover:bg-primary/30 text-foreground shadow-sm shadow-primary/5 transition-all hover:scale-105 active:scale-95"
         >
-          <LayoutGrid className="size-4 text-primary animate-pulse" />
-          Fase de Grupos
+          <LayoutGrid className="size-4 text-primary" />
+          Tabla de Grupos
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => mutate()}
-          disabled={isValidating}
-          className="gap-2 border-primary/40 bg-card/60 text-foreground hover:bg-secondary transition-all hover:scale-105 active:scale-95"
-        >
-          <RefreshCw className={`size-4 ${isValidating ? "animate-spin" : ""}`} />
-          Actualizar datos
-        </Button>
+        
+        {activeTab === "daily" && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => mutate()}
+            disabled={isValidating}
+            className="gap-2 border-primary/40 bg-card/60 text-foreground hover:bg-secondary transition-all hover:scale-105 active:scale-95"
+          >
+            <RefreshCw className={`size-4 ${isValidating ? "animate-spin" : ""}`} />
+            Actualizar datos
+          </Button>
+        )}
       </div>
 
-      {/* Cargando fixtures */}
-      {isLoading && (
-        <div className="flex flex-col items-center justify-center gap-3 py-20 text-muted-foreground">
-          <Loader2 className="size-8 animate-spin text-primary" />
-          <p className="text-sm">Buscando partidos en internet...</p>
-        </div>
-      )}
-
-      {/* Error fixtures */}
-      {error && (
-        <div className="mx-auto max-w-xl rounded-2xl border border-destructive/40 bg-card/60 p-6 text-center">
-          <p className="text-pretty text-sm leading-relaxed text-destructive">{error.message}</p>
-        </div>
-      )}
-
-      {/* Paneles de partidos */}
-      {data && !data.error && (
+      {/* CONTENIDO DE LA PESTAÑA: PARTIDOS DIARIOS */}
+      {activeTab === "daily" && (
         <div className="flex flex-col gap-6">
-          {data.today?.length > 0 && <TodayPanel matches={data.today} />}
-          <div className="grid gap-6 md:grid-cols-2">
-            <ResultsPanel results={data.yesterday || []} />
-            {data.upcoming?.length > 0 && <UpcomingPanel matches={data.upcoming} />}
-          </div>
+          {/* Resultados en vivo FIFA */}
+          {liveLoading && (
+            <div className="flex flex-col items-center py-4 text-muted-foreground">
+              <Loader2 className="size-6 animate-spin" />
+              <p className="text-sm">Cargando resultados en vivo...</p>
+            </div>
+          )}
+
+          {liveError && (
+            <div className="mx-auto max-w-xl rounded-2xl border border-destructive/40 bg-card/60 p-4 text-center text-destructive">
+              <p className="text-sm">Error al cargar los resultados en vivo.</p>
+            </div>
+          )}
+
+          {(liveData?.matches?.length ?? 0) > 0 && (
+            <div className="mt-2 mb-4 flex flex-col gap-4">
+              <h2 className="text-xl font-semibold text-primary">Resultados en vivo</h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                {liveData!.matches.map((m, idx) => (
+                  <div key={idx} className="rounded-lg border p-3 bg-card/60">
+                    <p className="font-medium">{m.homeTeam} vs {m.awayTeam}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {m.homeScore} - {m.awayScore} ({m.minute ?? "0"}&apos;)
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Cargando fixtures */}
+          {isLoading && (
+            <div className="flex flex-col items-center justify-center gap-3 py-20 text-muted-foreground">
+              <Loader2 className="size-8 animate-spin text-primary" />
+              <p className="text-sm">Buscando partidos en internet...</p>
+            </div>
+          )}
+
+          {/* Error fixtures */}
+          {error && (
+            <div className="mx-auto max-w-xl rounded-2xl border border-destructive/40 bg-card/60 p-6 text-center">
+              <p className="text-pretty text-sm leading-relaxed text-destructive">{error.message}</p>
+            </div>
+          )}
+
+          {/* Paneles de partidos diarios */}
+          {data && (
+            <div className="flex flex-col gap-6">
+              {data.today?.length > 0 && <TodayPanel matches={data.today} />}
+              <div className="grid gap-6 md:grid-cols-2">
+                <ResultsPanel results={data.yesterday || []} />
+                {data.upcoming?.length > 0 && <UpcomingPanel matches={data.upcoming} />}
+              </div>
+            </div>
+          )}
         </div>
+      )}
+
+      {/* CONTENIDO DE LA PESTAÑA: FASE ELIMINATORIA */}
+      {activeTab === "elimination" && (
+        <BracketView />
       )}
 
       {/* Trofeo decorativo */}
@@ -164,8 +215,9 @@ export function Calendar() {
         </p>
       </div>
 
-      {/* Modal de Clasificación */}
+      {/* Modal de Clasificación de Grupos */}
       <StandingsModal isOpen={isStandingsOpen} onClose={() => setIsStandingsOpen(false)} />
     </div>
   )
 }
+
