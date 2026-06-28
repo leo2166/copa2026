@@ -4,8 +4,7 @@ import { useState, useMemo } from "react"
 import { BracketMatchCard } from "./bracket-match-card"
 import { Flag } from "@/components/flag"
 import { cn } from "@/lib/utils"
-import { GitMerge, ListFilter, HelpCircle, Sparkles, MapPin, Calendar, Clock, Trophy } from "lucide-react"
-import { useStandings, GroupStanding } from "@/hooks/useStandings"
+import { GitMerge, ListFilter, Sparkles, MapPin, Calendar, Clock, Trophy } from "lucide-react"
 import bracketDataRaw from "@/data/bracket.json"
 
 // Tipos
@@ -31,255 +30,22 @@ type BracketData = {
   final: Match[]
 }
 
-type SlotDetail = {
-  group: string
-  pos: number
-  label: string
-}
+// Fase de grupos terminada: los cruces del bracket.json ya son definitivos.
+// La lógica dinámica solo se aplica para propagar ganadores a las rondas siguientes.
 
-type ThirdSlotDetail = {
-  type: "third"
-  label: string
-  groups: string[]
-}
-
-type MatchSlotConfig = {
-  home: SlotDetail
-  away: SlotDetail | ThirdSlotDetail
-}
-
-const SLOT_MAP: Record<string, MatchSlotConfig> = {
-  m1: {
-    home: { group: "A", pos: 2, label: "2° Gr.A" },
-    away: { group: "B", pos: 2, label: "2° Gr.B" }
-  },
-  m2: {
-    home: { group: "E", pos: 1, label: "1° Gr.E" },
-    away: { type: "third", label: "3° Gr.ABCDF", groups: ["A", "B", "C", "D", "F"] }
-  },
-  m3: {
-    home: { group: "F", pos: 1, label: "1° Gr.F" },
-    away: { group: "C", pos: 2, label: "2° Gr.C" }
-  },
-  m4: {
-    home: { group: "C", pos: 1, label: "1° Gr.C" },
-    away: { type: "third", label: "3° Gr.CDFGH", groups: ["C", "D", "F", "G", "H"] }
-  },
-  m5: {
-    home: { group: "I", pos: 1, label: "1° Gr.I" },
-    away: { group: "F", pos: 2, label: "2° Gr.F" }
-  },
-  m6: {
-    home: { group: "E", pos: 2, label: "2° Gr.E" },
-    away: { group: "I", pos: 2, label: "2° Gr.I" }
-  },
-  m7: {
-    home: { group: "A", pos: 1, label: "1° Gr.A" },
-    away: { type: "third", label: "3° Gr.CEFHI", groups: ["C", "E", "F", "H", "I"] }
-  },
-  m8: {
-    home: { group: "L", pos: 1, label: "1° Gr.L" },
-    away: { type: "third", label: "3° Gr.EHIJK", groups: ["E", "H", "I", "J", "K"] }
-  },
-  m9: {
-    home: { group: "D", pos: 1, label: "1° Gr.D" },
-    away: { type: "third", label: "3° Gr.BEFIJ", groups: ["B", "E", "F", "I", "J"] }
-  },
-  m10: {
-    home: { group: "G", pos: 1, label: "1° Gr.G" },
-    away: { type: "third", label: "3° Gr.AEHIJ", groups: ["A", "E", "H", "I", "J"] }
-  },
-  m11: {
-    home: { group: "K", pos: 2, label: "2° Gr.K" },
-    away: { group: "L", pos: 2, label: "2° Gr.L" }
-  },
-  m12: {
-    home: { group: "H", pos: 1, label: "1° Gr.H" },
-    away: { group: "J", pos: 2, label: "2° Gr.J" }
-  },
-  m13: {
-    home: { group: "B", pos: 1, label: "1° Gr.B" },
-    away: { type: "third", label: "3° Gr.EFGIJ", groups: ["E", "F", "G", "I", "J"] }
-  },
-  m14: {
-    home: { group: "K", pos: 1, label: "1° Gr.K" },
-    away: { type: "third", label: "3° Gr.DEJL", groups: ["D", "E", "J", "L"] }
-  },
-  m15: {
-    home: { group: "J", pos: 1, label: "1° Gr.J" },
-    away: { group: "H", pos: 2, label: "2° Gr.H" }
-  },
-  m16: {
-    home: { group: "D", pos: 2, label: "2° Gr.D" },
-    away: { group: "G", pos: 2, label: "2° Gr.G" }
-  }
-}
-
-type ThirdPlaceTeam = {
-  name: string
-  code: string
-  group: string
-  points: number
-  goalDifference: number
-  goalsFor: number
-}
-
-function calculateBestThirds(standings: GroupStanding[]): ThirdPlaceTeam[] {
-  const thirds: ThirdPlaceTeam[] = []
-  standings.forEach((group) => {
-    const letter = group.groupName.replace(/grupo\s+/i, "").replace(/group\s+/i, "").trim().toUpperCase()
-    const team = group.teams.find(t => t.rank === 3) || group.teams[2]
-    if (team) {
-      thirds.push({
-        name: team.name,
-        code: team.code,
-        group: letter,
-        points: team.points,
-        goalDifference: team.goalDifference,
-        goalsFor: team.goalsFor
-      })
-    }
-  })
-
-  // Ordenar según criterios FIFA
-  thirds.sort((a, b) => {
-    if (b.points !== a.points) return b.points - a.points
-    if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference
-    return b.goalsFor - a.goalsFor
-  })
-
-  return thirds
-}
-
-function resolveThirdPlaceTeam(
-  slotLabel: string,
-  allowedGroups: string[],
-  bestThirds: ThirdPlaceTeam[],
-  matchId: string,
-  assignedThirds: Record<string, string>
-): ThirdPlaceTeam | null {
-  const qualifiedThirds = bestThirds.slice(0, 8)
-  const candidates = qualifiedThirds.filter(
-    (t) => allowedGroups.includes(t.group) && !assignedThirds[t.name]
-  )
-
-  if (candidates.length > 0) {
-    const selected = candidates[0]
-    assignedThirds[selected.name] = matchId
-    return selected
-  }
-
-  return null
-}
 
 export function BracketView() {
-  const { standings, isLoading } = useStandings()
   const [hoveredTeam, setHoveredTeam] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<"tree" | "list">("tree")
   const [activeListRound, setActiveListRound] = useState<keyof BracketData>("16avos")
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null)
 
-  // Procesamiento dinámico del bracket en base a los standings de la fase de grupos y marcadores jugados
+  // La fase de grupos ha terminado. Los cruces de 16avos ya están fijos en bracket.json.
+  // Solo se propagan los ganadores a las rondas siguientes cuando hay marcadores.
   const bracketData = useMemo(() => {
-    // Clonar profundamente el bracket crudo original
     const bracket = JSON.parse(JSON.stringify(bracketDataRaw)) as BracketData
 
-    if (!standings || standings.length === 0) {
-      return bracket
-    }
-
-    const assignedThirds: Record<string, string> = {}
-    const bestThirds = calculateBestThirds(standings)
-    // Verificar si todos los grupos han terminado
-    const allGroupsFinished = standings.every((g) => g.teams.every((t) => t.played === 3))
-
-    // 1. Resolver la ronda de 16avos de final
-    bracket["16avos"] = bracket["16avos"].map((match) => {
-      const config = SLOT_MAP[match.id]
-      if (!config) return match
-
-      let homeTeam = match.homeTeam
-      let homeCode = match.homeCode
-      let awayTeam = match.awayTeam
-      let awayCode = match.awayCode
-
-      // Local
-      if (config.home) {
-        const { group, pos, label } = config.home
-        const groupData = standings.find((g) => {
-          const letter = g.groupName.replace(/grupo\s+/i, "").replace(/group\s+/i, "").trim().toUpperCase()
-          return letter === group
-        })
-
-        if (groupData) {
-          const isFinished = groupData.teams.every((t) => t.played === 3)
-          if (isFinished) {
-            const team = groupData.teams[pos - 1]
-            if (team) {
-              homeTeam = team.name
-              homeCode = team.code
-            }
-          } else {
-            homeTeam = label
-            homeCode = ""
-          }
-        }
-      }
-
-      // Visitante
-      if (config.away) {
-        if ("type" in config.away && config.away.type === "third") {
-          // Es una posición para el mejor tercero
-          if (allGroupsFinished) {
-            const team = resolveThirdPlaceTeam(
-              config.away.label,
-              config.away.groups,
-              bestThirds,
-              match.id,
-              assignedThirds
-            )
-            if (team) {
-              awayTeam = team.name
-              awayCode = team.code
-            }
-          } else {
-            awayTeam = config.away.label
-            awayCode = ""
-          }
-        } else {
-          // Es 1° o 2° de grupo
-          const { group, pos, label } = config.away as SlotDetail
-          const groupData = standings.find((g) => {
-            const letter = g.groupName.replace(/grupo\s+/i, "").replace(/group\s+/i, "").trim().toUpperCase()
-            return letter === group
-          })
-
-          if (groupData) {
-            const isFinished = groupData.teams.every((t) => t.played === 3)
-            if (isFinished) {
-              const team = groupData.teams[pos - 1]
-              if (team) {
-                awayTeam = team.name
-                awayCode = team.code
-              }
-            } else {
-              awayTeam = label
-              awayCode = ""
-            }
-          }
-        }
-      }
-
-      return {
-        ...match,
-        homeTeam,
-        homeCode,
-        awayTeam,
-        awayCode
-      }
-    })
-
-    // 2. Propagar ganadores a las siguientes fases (octavos, cuartos, semis, final)
+    // Propagar ganadores a las siguientes fases (octavos, cuartos, semis, final)
     const roundsOrder: Array<keyof BracketData> = ["16avos", "octavos", "cuartos", "semis", "final"]
     for (let i = 0; i < roundsOrder.length - 1; i++) {
       const currentRound = roundsOrder[i]
@@ -304,18 +70,17 @@ export function BracketView() {
                 winnerName = match.awayTeam
                 winnerCode = match.awayCode
               } else {
-                // Empate técnico (penales)
+                // Empate (penales): mostrar "Gan. EQUIPOA/EQUIPOB"
                 winnerName = `Ganador ${match.id.toUpperCase()}`
                 winnerCode = ""
               }
             } else {
-              // El partido no se ha jugado
-              // Verificamos si los equipos de este partido origen ya están confirmados
-              const isHomeReal = match.homeCode !== "" && !match.homeTeam.includes("Gr.") && match.homeTeam !== "Por definir" && !match.homeTeam.startsWith("Ganador") && !match.homeTeam.startsWith("G.")
-              const isAwayReal = match.awayCode !== "" && !match.awayTeam.includes("Gr.") && match.awayTeam !== "Por definir" && !match.awayTeam.startsWith("Ganador") && !match.awayTeam.startsWith("G.")
+              // El partido no se ha jugado aún
+              const isHomeReal = match.homeCode !== "" && match.homeTeam !== "Por definir" && !match.homeTeam.startsWith("Ganador") && !match.homeTeam.startsWith("G.")
+              const isAwayReal = match.awayCode !== "" && match.awayTeam !== "Por definir" && !match.awayTeam.startsWith("Ganador") && !match.awayTeam.startsWith("G.")
 
               if (isHomeReal && isAwayReal) {
-                winnerName = `Ganador ${match.homeTeam}/${match.awayTeam}`
+                winnerName = `Gan. ${match.homeTeam}/${match.awayTeam}`
               } else {
                 winnerName = `G. ${match.id.toUpperCase()}`
               }
@@ -335,7 +100,7 @@ export function BracketView() {
     }
 
     return bracket
-  }, [standings])
+  }, [])
 
   // Encontrar el camino del equipo hovered para resaltar líneas o tarjetas
   const getIsTeamInMatch = (match: Match, team: string | null) => {
@@ -368,11 +133,9 @@ export function BracketView() {
           <div>
             <h2 className="text-sm font-bold text-foreground sm:text-base flex items-center gap-2 flex-wrap">
               Fase de Eliminación Directa
-              {standings && standings.length > 0 && (
-                <span className="inline-flex items-center text-[9px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider animate-pulse">
-                  Cruces Dinámicos
-                </span>
-              )}
+              <span className="inline-flex items-center text-[9px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                Cruces Confirmados ✓
+              </span>
             </h2>
             <p className="text-xs text-muted-foreground">Sigue el camino a la gloria – El que pierde se va</p>
           </div>

@@ -76,13 +76,13 @@ export function BracketMatchCard({
       )}
 
       {/* Cabecera del partido (Fecha y hora) */}
-      <div className="flex items-center justify-between border-b border-border/30 pb-2 mb-2 text-[10px] text-muted-foreground/80 font-medium tracking-wide">
+      <div className="flex items-center justify-between border-b border-border/30 pb-2 mb-2 text-[10px] text-white font-semibold tracking-wide">
         <span className="flex items-center gap-1">
-          <Calendar className="size-3 text-muted-foreground/50" />
+          <Calendar className="size-3 text-white/70" />
           {date}
         </span>
         <span className="flex items-center gap-1 font-mono">
-          <Clock className="size-3 text-muted-foreground/50" />
+          <Clock className="size-3 text-white/70" />
           {time} VET
         </span>
       </div>
@@ -110,7 +110,7 @@ export function BracketMatchCard({
               </div>
             )}
             <span className={cn(
-              "truncate text-xs font-semibold tracking-wide",
+              "truncate text-xs font-bold tracking-wide text-primary",
               !isHomeReal && "text-muted-foreground/65 italic font-medium text-[10px]"
             )}>
               {homeTeam}
@@ -149,7 +149,7 @@ export function BracketMatchCard({
               </div>
             )}
             <span className={cn(
-              "truncate text-xs font-semibold tracking-wide",
+              "truncate text-xs font-bold tracking-wide text-primary",
               !isAwayReal && "text-muted-foreground/65 italic font-medium text-[10px]"
             )}>
               {awayTeam}
