@@ -1,11 +1,11 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import useSWR from "swr"
 import { BracketMatchCard } from "./bracket-match-card"
 import { Flag } from "@/components/flag"
 import { cn } from "@/lib/utils"
-import { GitMerge, ListFilter, Sparkles, MapPin, Calendar, Clock, Trophy } from "lucide-react"
-import bracketDataRaw from "@/data/bracket.json"
+import { GitMerge, ListFilter, Sparkles, MapPin, Calendar, Clock, Trophy, Loader2, RefreshCw } from "lucide-react"
 
 // Tipos
 type Match = {
@@ -30,9 +30,13 @@ type BracketData = {
   final: Match[]
 }
 
-// Fase de grupos terminada: los cruces del bracket.json ya son definitivos.
-// La lógica dinámica solo se aplica para propagar ganadores a las rondas siguientes.
-
+// ── Fetcher SWR ──────────────────────────────────────────────────────────────
+const fetcher = (url: string) =>
+  fetch(url).then(async (r) => {
+    const json = await r.json()
+    if (!r.ok || json.error) throw new Error(json.error ?? `Error ${r.status}`)
+    return json as BracketData
+  })
 
 export function BracketView() {
   const [hoveredTeam, setHoveredTeam] = useState<string | null>(null)
@@ -40,12 +44,25 @@ export function BracketView() {
   const [activeListRound, setActiveListRound] = useState<keyof BracketData>("16avos")
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null)
 
-  // La fase de grupos ha terminado. Los cruces de 16avos ya están fijos en bracket.json.
-  // Solo se propagan los ganadores a las rondas siguientes cuando hay marcadores.
-  const bracketData = useMemo(() => {
-    const bracket = JSON.parse(JSON.stringify(bracketDataRaw)) as BracketData
+  // ── Carga dinámica desde /api/bracket ────────────────────────────────────────
+  const {
+    data: rawBracket,
+    error: bracketError,
+    isLoading: bracketLoading,
+    isValidating,
+    mutate,
+  } = useSWR<BracketData>("/api/bracket", fetcher, {
+    revalidateOnFocus: false,
+    refreshInterval: 60000, // refresca cada 60 s automáticamente
+    dedupingInterval: 30000,
+  })
 
-    // Propagar ganadores a las siguientes fases (octavos, cuartos, semis, final)
+  // Propagar ganadores a las siguientes fases a partir de los datos frescos de la API
+  const bracketData = useMemo(() => {
+    if (!rawBracket) return null
+
+    const bracket = JSON.parse(JSON.stringify(rawBracket)) as BracketData
+
     const roundsOrder: Array<keyof BracketData> = ["16avos", "octavos", "cuartos", "semis", "final"]
     for (let i = 0; i < roundsOrder.length - 1; i++) {
       const currentRound = roundsOrder[i]
@@ -62,7 +79,6 @@ export function BracketView() {
             const awayScore = match.awayScore
 
             if (homeScore !== null && awayScore !== null) {
-              // El partido ya se jugó
               if (homeScore > awayScore) {
                 winnerName = match.homeTeam
                 winnerCode = match.homeCode
@@ -70,12 +86,10 @@ export function BracketView() {
                 winnerName = match.awayTeam
                 winnerCode = match.awayCode
               } else {
-                // Empate (penales): mostrar "Gan. EQUIPOA/EQUIPOB"
                 winnerName = `Ganador ${match.id.toUpperCase()}`
                 winnerCode = ""
               }
             } else {
-              // El partido no se ha jugado aún
               const isHomeReal = match.homeCode !== "" && match.homeTeam !== "Por definir" && !match.homeTeam.startsWith("Ganador") && !match.homeTeam.startsWith("G.")
               const isAwayReal = match.awayCode !== "" && match.awayTeam !== "Por definir" && !match.awayTeam.startsWith("Ganador") && !match.awayTeam.startsWith("G.")
 
@@ -100,7 +114,7 @@ export function BracketView() {
     }
 
     return bracket
-  }, [])
+  }, [rawBracket])
 
   // Encontrar el camino del equipo hovered para resaltar líneas o tarjetas
   const getIsTeamInMatch = (match: Match, team: string | null) => {
@@ -108,20 +122,41 @@ export function BracketView() {
     return match.homeTeam === team || match.awayTeam === team
   }
 
-  // Filtrar partidos por ala para la vista de árbol
-  // Ala Izquierda
+
+  // ── Estados de carga y error ─────────────────────────────────────────────────
+  if (bracketLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-24 text-muted-foreground">
+        <Loader2 className="size-8 animate-spin text-primary" />
+        <p className="text-sm font-semibold">Cargando bracket eliminatorio...</p>
+      </div>
+    )
+  }
+
+  if (bracketError || !bracketData) {
+    return (
+      <div className="mx-auto max-w-md rounded-2xl border border-destructive/40 bg-card/60 p-6 text-center">
+        <p className="text-sm text-destructive font-semibold">Error al cargar el bracket. Intenta de nuevo.</p>
+        <button
+          onClick={() => mutate()}
+          className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-colors"
+        >
+          <RefreshCw className="size-3.5" />
+          Reintentar
+        </button>
+      </div>
+    )
+  }
+
+  // ── Derivaciones del bracket (bracketData garantizado no-null aquí) ──────────
   const left16avos = bracketData["16avos"].slice(0, 8)
   const leftOctavos = bracketData["octavos"].slice(0, 4)
   const leftCuartos = bracketData["cuartos"].slice(0, 2)
   const leftSemis = bracketData["semis"].slice(0, 1)
-
-  // Ala Derecha
   const right16avos = bracketData["16avos"].slice(8, 16)
   const rightOctavos = bracketData["octavos"].slice(4, 8)
   const rightCuartos = bracketData["cuartos"].slice(2, 4)
   const rightSemis = bracketData["semis"].slice(1, 2)
-
-  // Final (Centro)
   const finalMatch = bracketData["final"][0]
 
   return (
@@ -134,39 +169,49 @@ export function BracketView() {
             <h2 className="text-sm font-bold text-foreground sm:text-base flex items-center gap-2 flex-wrap">
               Fase de Eliminación Directa
               <span className="inline-flex items-center text-[9px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                Cruces Confirmados ✓
+                En Vivo ✓
               </span>
             </h2>
             <p className="text-xs text-muted-foreground">Sigue el camino a la gloria – El que pierde se va</p>
           </div>
         </div>
 
-        {/* Alternador de vistas */}
-        <div className="flex items-center gap-2 bg-secondary/30 rounded-xl p-1 border border-border/30">
+        {/* Alternador de vistas + botón actualizar */}
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => setViewMode("tree")}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200",
-              viewMode === "tree"
-                ? "bg-primary text-primary-foreground shadow-md"
-                : "text-muted-foreground hover:text-foreground"
-            )}
+            onClick={() => mutate()}
+            disabled={isValidating}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-border/40 bg-card/40 text-muted-foreground hover:text-foreground transition-all duration-200 disabled:opacity-50"
+            title="Actualizar bracket"
           >
-            <GitMerge className="size-3.5" />
-            Cuadro Completo
+            <RefreshCw className={`size-3.5 ${isValidating ? "animate-spin" : ""}`} />
           </button>
-          <button
-            onClick={() => setViewMode("list")}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200",
-              viewMode === "list"
-                ? "bg-primary text-primary-foreground shadow-md"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            <ListFilter className="size-3.5" />
-            Por Rondas
-          </button>
+          <div className="flex items-center gap-2 bg-secondary/30 rounded-xl p-1 border border-border/30">
+            <button
+              onClick={() => setViewMode("tree")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200",
+                viewMode === "tree"
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <GitMerge className="size-3.5" />
+              Cuadro Completo
+            </button>
+            <button
+              onClick={() => setViewMode("list")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200",
+                viewMode === "list"
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <ListFilter className="size-3.5" />
+              Por Rondas
+            </button>
+          </div>
         </div>
       </div>
 
