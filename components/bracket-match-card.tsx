@@ -9,9 +9,11 @@ export interface BracketMatchCardProps {
   homeTeam: string
   homeCode: string
   homeScore: number | null
+  homePenalty?: number | null
   awayTeam: string
   awayCode: string
   awayScore: number | null
+  awayPenalty?: number | null
   date: string
   time: string
   hoveredTeam: string | null
@@ -24,9 +26,11 @@ export function BracketMatchCard({
   homeTeam,
   homeCode,
   homeScore,
+  homePenalty,
   awayTeam,
   awayCode,
   awayScore,
+  awayPenalty,
   date,
   time,
   hoveredTeam,
@@ -41,8 +45,14 @@ export function BracketMatchCard({
 
   // Determinar ganador
   const isFinished = homeScore !== null && awayScore !== null
-  const homeWon = isFinished && homeScore! > awayScore!
-  const awayWon = isFinished && awayScore! > homeScore!
+  const homeWon = isFinished && (
+    homeScore! > awayScore! || 
+    (homeScore! === awayScore! && homePenalty !== undefined && homePenalty !== null && awayPenalty !== undefined && awayPenalty !== null && homePenalty > awayPenalty)
+  )
+  const awayWon = isFinished && (
+    awayScore! > homeScore! || 
+    (homeScore! === awayScore! && homePenalty !== undefined && homePenalty !== null && awayPenalty !== undefined && awayPenalty !== null && awayPenalty > homePenalty)
+  )
 
   // Estados de hover (solo equipos reales, no placeholders)
   const isHomeHovered = hoveredTeam && isHomeReal && homeTeam === hoveredTeam
@@ -119,11 +129,14 @@ export function BracketMatchCard({
           <div className="flex items-center gap-1">
             {homeWon && <Trophy className="size-3 text-primary shrink-0 animate-bounce" />}
             <span className={cn(
-              "font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-secondary/30",
+              "font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-secondary/30 flex items-center gap-0.5",
               homeScore === null && "text-muted-foreground/40 font-normal",
               homeWon && "text-primary bg-primary/10"
             )}>
-              {homeScore !== null ? homeScore : "-"}
+              <span>{homeScore !== null ? homeScore : "-"}</span>
+              {homePenalty !== undefined && homePenalty !== null && (
+                <span className="text-[9px] text-muted-foreground/80 font-normal">({homePenalty})</span>
+              )}
             </span>
           </div>
         </div>
@@ -158,11 +171,14 @@ export function BracketMatchCard({
           <div className="flex items-center gap-1">
             {awayWon && <Trophy className="size-3 text-primary shrink-0 animate-bounce" />}
             <span className={cn(
-              "font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-secondary/30",
+              "font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-secondary/30 flex items-center gap-0.5",
               awayScore === null && "text-muted-foreground/40 font-normal",
               awayWon && "text-primary bg-primary/10"
             )}>
-              {awayScore !== null ? awayScore : "-"}
+              <span>{awayScore !== null ? awayScore : "-"}</span>
+              {awayPenalty !== undefined && awayPenalty !== null && (
+                <span className="text-[9px] text-muted-foreground/80 font-normal">({awayPenalty})</span>
+              )}
             </span>
           </div>
         </div>

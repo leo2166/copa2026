@@ -13,9 +13,11 @@ type Match = {
   homeTeam: string
   homeCode: string
   homeScore: number | null
+  homePenalty?: number | null
   awayTeam: string
   awayCode: string
   awayScore: number | null
+  awayPenalty?: number | null
   date: string
   time: string
   nextMatchId: string | null
@@ -77,12 +79,17 @@ export function BracketView() {
 
             const homeScore = match.homeScore
             const awayScore = match.awayScore
+            const homePenalty = match.homePenalty
+            const awayPenalty = match.awayPenalty
 
             if (homeScore !== null && awayScore !== null) {
-              if (homeScore > awayScore) {
+              const homeWon = homeScore > awayScore || (homeScore === awayScore && homePenalty !== undefined && homePenalty !== null && awayPenalty !== undefined && awayPenalty !== null && homePenalty > awayPenalty)
+              const awayWon = awayScore > homeScore || (homeScore === awayScore && homePenalty !== undefined && homePenalty !== null && awayPenalty !== undefined && awayPenalty !== null && awayPenalty > homePenalty)
+
+              if (homeWon) {
                 winnerName = match.homeTeam
                 winnerCode = match.homeCode
-              } else if (awayScore > homeScore) {
+              } else if (awayWon) {
                 winnerName = match.awayTeam
                 winnerCode = match.awayCode
               } else {
@@ -455,13 +462,23 @@ export function BracketView() {
               {/* VS / Goles */}
               <div className="flex flex-col items-center justify-center">
                 <div className="flex items-center gap-2 font-mono text-2xl font-black">
-                  <span className={cn(selectedMatch.homeScore !== null && selectedMatch.homeScore > (selectedMatch.awayScore || 0) && "text-primary")}>
-                    {selectedMatch.homeScore !== null ? selectedMatch.homeScore : "-"}
-                  </span>
+                  <div className="flex items-baseline gap-0.5">
+                    <span className={cn(selectedMatch.homeScore !== null && (selectedMatch.homeScore > (selectedMatch.awayScore || 0) || (selectedMatch.homeScore === selectedMatch.awayScore && selectedMatch.homePenalty !== undefined && selectedMatch.homePenalty !== null && selectedMatch.awayPenalty !== undefined && selectedMatch.awayPenalty !== null && selectedMatch.homePenalty > selectedMatch.awayPenalty)) && "text-primary")}>
+                      {selectedMatch.homeScore !== null ? selectedMatch.homeScore : "-"}
+                    </span>
+                    {selectedMatch.homePenalty !== undefined && selectedMatch.homePenalty !== null && (
+                      <span className="text-sm text-muted-foreground/80 font-normal">({selectedMatch.homePenalty})</span>
+                    )}
+                  </div>
                   <span className="text-muted-foreground/30 text-sm">:</span>
-                  <span className={cn(selectedMatch.awayScore !== null && selectedMatch.awayScore > (selectedMatch.homeScore || 0) && "text-primary")}>
-                    {selectedMatch.awayScore !== null ? selectedMatch.awayScore : "-"}
-                  </span>
+                  <div className="flex items-baseline gap-0.5">
+                    <span className={cn(selectedMatch.awayScore !== null && (selectedMatch.awayScore > (selectedMatch.homeScore || 0) || (selectedMatch.homeScore === selectedMatch.awayScore && selectedMatch.homePenalty !== undefined && selectedMatch.homePenalty !== null && selectedMatch.awayPenalty !== undefined && selectedMatch.awayPenalty !== null && selectedMatch.awayPenalty > selectedMatch.homePenalty)) && "text-primary")}>
+                      {selectedMatch.awayScore !== null ? selectedMatch.awayScore : "-"}
+                    </span>
+                    {selectedMatch.awayPenalty !== undefined && selectedMatch.awayPenalty !== null && (
+                      <span className="text-sm text-muted-foreground/80 font-normal">({selectedMatch.awayPenalty})</span>
+                    )}
+                  </div>
                 </div>
                 <span className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/60 mt-1">VS</span>
               </div>

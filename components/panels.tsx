@@ -9,6 +9,8 @@ type Result = {
   awayCode: string
   homeScore: number
   awayScore: number
+  homePenalty?: number | null
+  awayPenalty?: number | null
 }
 type Upcoming = { homeTeam: string; homeCode: string; awayTeam: string; awayCode: string; date: string }
 
@@ -44,9 +46,23 @@ export function TodayPanel({ matches }: { matches: any[] }) {
               <span className="text-right text-sm font-semibold sm:text-base">{m.homeTeam}</span>
               <Flag code={m.homeCode} />
             </div>
-            <span className="min-w-[4.5rem] text-center text-base font-bold text-[#39FF14] tabular-nums sm:text-lg">
-              {/* 00:00 = medianoche en hora militar (inicio del nuevo día) */}
-              {m.homeScore !== undefined ? `${m.homeScore} - ${m.awayScore}` : m.time}
+            <span className="min-w-[4.5rem] text-center text-base font-bold text-[#39FF14] tabular-nums sm:text-lg flex flex-col items-center justify-center">
+              {m.homeScore !== undefined ? (
+                <>
+                  <span>
+                    {m.homeScore}
+                    {m.homePenalty !== undefined && m.homePenalty !== null ? `(${m.homePenalty})` : ""}
+                    {" - "}
+                    {m.awayScore}
+                    {m.awayPenalty !== undefined && m.awayPenalty !== null ? `(${m.awayPenalty})` : ""}
+                  </span>
+                  {m.homePenalty !== undefined && m.homePenalty !== null && (
+                    <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-normal leading-none mt-0.5">Penales</span>
+                  )}
+                </>
+              ) : (
+                m.time
+              )}
             </span>
             <div className="flex flex-1 items-center gap-2 sm:gap-3">
               <Flag code={m.awayCode} />
@@ -75,9 +91,15 @@ export function ResultsPanel({ results }: { results: Result[] }) {
             
             <div className="flex flex-col items-center px-4">
               <span className="rounded-md bg-foreground text-background px-2 py-0.5 text-xs font-bold tabular-nums">
-                {r.homeScore} - {r.awayScore}
+                {r.homeScore}
+                {r.homePenalty !== undefined && r.homePenalty !== null ? `(${r.homePenalty})` : ""}
+                {" - "}
+                {r.awayScore}
+                {r.awayPenalty !== undefined && r.awayPenalty !== null ? `(${r.awayPenalty})` : ""}
               </span>
-              <span className="text-[10px] uppercase font-bold text-muted-foreground mt-1">Final</span>
+              <span className="text-[10px] uppercase font-bold text-muted-foreground mt-1">
+                {r.homePenalty !== undefined && r.homePenalty !== null ? "Penales" : "Final"}
+              </span>
             </div>
 
             <div className="flex items-center gap-3 flex-1 justify-end">

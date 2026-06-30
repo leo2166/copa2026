@@ -1,0 +1,43 @@
+{
+  "16avos": [
+    { "id": "m1",  "homeTeam": "Sudáfrica",       "homeCode": "za", "awayTeam": "Canadá",             "awayCode": "ca", "homeScore": 0, "awayScore": 1, "date": "28 de Junio", "time": "15:00", "nextMatchId": "m17", "nextMatchSlot": "home" },
+    { "id": "m2",  "homeTeam": "Brasil",           "homeCode": "br", "awayTeam": "Japón",              "awayCode": "jp", "homeScore": null, "awayScore": null, "date": "29 de Junio", "time": "13:00", "nextMatchId": "m18", "nextMatchSlot": "home" },
+    { "id": "m3",  "homeTeam": "Alemania",         "homeCode": "de", "awayTeam": "Paraguay",           "awayCode": "py", "homeScore": null, "awayScore": null, "date": "29 de Junio", "time": "16:30", "nextMatchId": "m17", "nextMatchSlot": "away" },
+    { "id": "m4",  "homeTeam": "Países Bajos",     "homeCode": "nl", "awayTeam": "Marruecos",          "awayCode": "ma", "homeScore": null, "awayScore": null, "date": "29 de Junio", "time": "21:00", "nextMatchId": "m18", "nextMatchSlot": "away" },
+    { "id": "m5",  "homeTeam": "Costa de Marfil",  "homeCode": "ci", "awayTeam": "Noruega",            "awayCode": "no", "homeScore": null, "awayScore": null, "date": "30 de Junio", "time": "13:00", "nextMatchId": "m19", "nextMatchSlot": "home" },
+    { "id": "m6",  "homeTeam": "Francia",          "homeCode": "fr", "awayTeam": "Suecia",             "awayCode": "se", "homeScore": null, "awayScore": null, "date": "30 de Junio", "time": "17:00", "nextMatchId": "m19", "nextMatchSlot": "away" },
+    { "id": "m7",  "homeTeam": "México",           "homeCode": "mx", "awayTeam": "Ecuador",            "awayCode": "ec", "homeScore": null, "awayScore": null, "date": "30 de Junio", "time": "21:00", "nextMatchId": "m20", "nextMatchSlot": "home" },
+    { "id": "m8",  "homeTeam": "Inglaterra",       "homeCode": "gb-eng", "awayTeam": "RD Congo",      "awayCode": "cd", "homeScore": null, "awayScore": null, "date": "01 de Julio", "time": "12:00", "nextMatchId": "m20", "nextMatchSlot": "away" },
+    { "id": "m9",  "homeTeam": "Bélgica",          "homeCode": "be", "awayTeam": "Senegal",            "awayCode": "sn", "homeScore": null, "awayScore": null, "date": "01 de Julio", "time": "16:00", "nextMatchId": "m21", "nextMatchSlot": "home" },
+    { "id": "m10", "homeTeam": "Estados Unidos",   "homeCode": "us", "awayTeam": "Bosnia y Herz.",     "awayCode": "ba", "homeScore": null, "awayScore": null, "date": "01 de Julio", "time": "20:00", "nextMatchId": "m21", "nextMatchSlot": "away" },
+    { "id": "m11", "homeTeam": "España",           "homeCode": "es", "awayTeam": "Austria",            "awayCode": "at", "homeScore": null, "awayScore": null, "date": "02 de Julio", "time": "15:00", "nextMatchId": "m22", "nextMatchSlot": "home" },
+    { "id": "m12", "homeTeam": "Portugal",         "homeCode": "pt", "awayTeam": "Croacia",            "awayCode": "hr", "homeScore": null, "awayScore": null, "date": "02 de Julio", "time": "19:00", "nextMatchId": "m22", "nextMatchSlot": "away" },
+    { "id": "m13", "homeTeam": "Suiza",            "homeCode": "ch", "awayTeam": "Argelia",            "awayCode": "dz", "homeScore": null, "awayScore": null, "date": "02 de Julio", "time": "23:00", "nextMatchId": "m23", "nextMatchSlot": "home" },
+    { "id": "m14", "homeTeam": "Australia",        "homeCode": "au", "awayTeam": "Egipto",             "awayCode": "eg", "homeScore": null, "awayScore": null, "date": "03 de Julio", "time": "14:00", "nextMatchId": "m23", "nextMatchSlot": "away" },
+    { "id": "m15", "homeTeam": "Argentina",        "homeCode": "ar", "awayTeam": "Cabo Verde",         "awayCode": "cv", "homeScore": null, "awayScore": null, "date": "03 de Julio", "time": "18:00", "nextMatchId": "m24", "nextMatchSlot": "home" },
+    { "id": "m16", "homeTeam": "Colombia",         "homeCode": "co", "awayTeam": "Ghana",              "awayCode": "gh", "homeScore": null, "awayScore": null, "date": "03 de Julio", "time": "21:30", "nextMatchId": "m24", "nextMatchSlot": "away" }
+  ],
+  "octavos": [
+    { "id": "m17", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "05 de Julio", "time": "14:00", "nextMatchId": "m25", "nextMatchSlot": "home" },
+    { "id": "m18", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "05 de Julio", "time": "18:00", "nextMatchId": "m25", "nextMatchSlot": "away" },
+    { "id": "m19", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "06 de Julio", "time": "14:00", "nextMatchId": "m26", "nextMatchSlot": "home" },
+    { "id": "m20", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "06 de Julio", "time": "18:00", "nextMatchId": "m26", "nextMatchSlot": "away" },
+    { "id": "m21", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "07 de Julio", "time": "14:00", "nextMatchId": "m27", "nextMatchSlot": "home" },
+    { "id": "m22", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "07 de Julio", "time": "18:00", "nextMatchId": "m27", "nextMatchSlot": "away" },
+    { "id": "m23", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "08 de Julio", "time": "14:00", "nextMatchId": "m28", "nextMatchSlot": "home" },
+    { "id": "m24", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "08 de Julio", "time": "18:00", "nextMatchId": "m28", "nextMatchSlot": "away" }
+  ],
+  "cuartos": [
+    { "id": "m25", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "09 de Julio", "time": "16:00", "nextMatchId": "m29", "nextMatchSlot": "home" },
+    { "id": "m26", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "09 de Julio", "time": "20:00", "nextMatchId": "m29", "nextMatchSlot": "away" },
+    { "id": "m27", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "10 de Julio", "time": "16:00", "nextMatchId": "m30", "nextMatchSlot": "home" },
+    { "id": "m28", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "10 de Julio", "time": "20:00", "nextMatchId": "m30", "nextMatchSlot": "away" }
+  ],
+  "semis": [
+    { "id": "m29", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "14 de Julio", "time": "20:00", "nextMatchId": "m31", "nextMatchSlot": "home" },
+    { "id": "m30", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "15 de Julio", "time": "20:00", "nextMatchId": "m31", "nextMatchSlot": "away" }
+  ],
+  "final": [
+    { "id": "m31", "homeTeam": "Por definir", "homeCode": "", "awayTeam": "Por definir", "awayCode": "", "homeScore": null, "awayScore": null, "date": "19 de Julio", "time": "18:00", "nextMatchId": null, "nextMatchSlot": null }
+  ]
+}

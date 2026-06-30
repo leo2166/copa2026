@@ -19,8 +19,8 @@
       "homeCode": "br",
       "awayTeam": "Japón",
       "awayCode": "jp",
-      "homeScore": null,
-      "awayScore": null,
+      "homeScore": 2,
+      "awayScore": 1,
       "date": "29 de Junio",
       "time": "13:00",
       "nextMatchId": "m18",
@@ -32,12 +32,14 @@
       "homeCode": "de",
       "awayTeam": "Paraguay",
       "awayCode": "py",
-      "homeScore": null,
-      "awayScore": null,
+      "homeScore": 1,
+      "awayScore": 1,
       "date": "29 de Junio",
       "time": "16:30",
       "nextMatchId": "m17",
-      "nextMatchSlot": "away"
+      "nextMatchSlot": "away",
+      "homePenalty": 3,
+      "awayPenalty": 4
     },
     {
       "id": "m4",
@@ -45,12 +47,14 @@
       "homeCode": "nl",
       "awayTeam": "Marruecos",
       "awayCode": "ma",
-      "homeScore": null,
-      "awayScore": null,
+      "homeScore": 1,
+      "awayScore": 1,
       "date": "29 de Junio",
       "time": "21:00",
       "nextMatchId": "m18",
-      "nextMatchSlot": "away"
+      "nextMatchSlot": "away",
+      "homePenalty": 2,
+      "awayPenalty": 3
     },
     {
       "id": "m5",

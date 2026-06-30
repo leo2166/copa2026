@@ -1,9 +1,6 @@
 // Forzar renderización dinámica en cada petición (sin caché estática de Next.js)
 export const dynamic = 'force-dynamic';
 
-import fs from 'fs';
-import path from 'path';
-
 const TEAM_MAP: Record<string, { name: string; code: string }> = {
   // Abreviaciones de ESPN (FIFA o común)
   "MEX": { name: "México", code: "mx" },
@@ -135,7 +132,7 @@ function getTeamDetails(abbreviation?: string, displayName?: string): { name: st
 async function fetchEspnScores(dateStr: string) {
   try {
     const formattedDate = dateStr.replace(/-/g, '');
-    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${formattedDate}`, { cache: 'no-store' });
+    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${formattedDate}`, { next: { revalidate: 30 } });
     if (!res.ok) return [];
     const data = await res.json();
     return data.events || [];
@@ -205,148 +202,14 @@ function buildMatchObj(e: any, includeScore = false) {
   if (includeScore || state === 'in' || state === 'post') {
     matchObj.homeScore = parseInt(home.score) || 0;
     matchObj.awayScore = parseInt(away.score) || 0;
-    matchObj.homePenalty = home.shootoutScore !== undefined ? parseInt(home.shootoutScore) : null;
-    matchObj.awayPenalty = away.shootoutScore !== undefined ? parseInt(away.shootoutScore) : null;
   }
 
   return matchObj;
 }
 
-function parseBracketDate(dateStr: string): string {
-  const clean = dateStr.toLowerCase().trim();
-  const match = clean.match(/^(\d+)\s+de\s+(\w+)$/);
-  if (!match) return "";
-  const day = match[1].padStart(2, '0');
-  const monthStr = match[2];
-  let month = "";
-  if (monthStr.startsWith("jun")) {
-    month = "06";
-  } else if (monthStr.startsWith("jul")) {
-    month = "07";
-  } else {
-    return "";
-  }
-  return `2026-${month}-${day}`;
-}
-
-async function syncBracketMatches(todayStr: string): Promise<boolean> {
-  const bracketFilePath = path.join(process.cwd(), 'data', 'bracket.json');
-  if (!fs.existsSync(bracketFilePath)) {
-    console.error("No se encontró bracket.json en la ruta:", bracketFilePath);
-    return false;
-  }
-
-  try {
-    const rawData = fs.readFileSync(bracketFilePath, 'utf-8');
-    const bracket = JSON.parse(rawData);
-    let updated = false;
-
-    const rounds = ["16avos", "octavos", "cuartos", "semis", "final"];
-    const pendingDatesSet = new Set<string>();
-    const pendingMatches: Array<{ round: string; match: any; dateStr: string }> = [];
-
-    for (const round of rounds) {
-      const matches = bracket[round];
-      if (!Array.isArray(matches)) continue;
-
-      for (const match of matches) {
-        const hasTeams = match.homeCode && match.awayCode && match.homeTeam !== "Por definir" && match.awayTeam !== "Por definir";
-        const needsScore = match.homeScore === null || match.awayScore === null;
-
-        if (hasTeams && needsScore) {
-          const dateStr = parseBracketDate(match.date);
-          if (dateStr && dateStr <= todayStr) {
-            pendingDatesSet.add(dateStr);
-            pendingMatches.push({ round, match, dateStr });
-          }
-        }
-      }
-    }
-
-    if (pendingMatches.length === 0) {
-      return false;
-    }
-
-    console.log(`Sincronizando bracket: se encontraron ${pendingMatches.length} partidos pendientes en ${pendingDatesSet.size} fechas.`);
-
-    const datesList = Array.from(pendingDatesSet);
-    const espnDataForDates = await Promise.all(
-      datesList.map(async (d) => {
-        const events = await fetchEspnScores(d);
-        return { dateStr: d, events };
-      })
-    );
-
-    const eventsByDate: Record<string, any[]> = {};
-    espnDataForDates.forEach(({ dateStr, events }) => {
-      eventsByDate[dateStr] = events;
-    });
-
-    for (const item of pendingMatches) {
-      const { match, dateStr } = item;
-      const events = eventsByDate[dateStr] || [];
-
-      const matchingEvent = events.find((event: any) => {
-        const comp = event.competitions?.[0];
-        if (!comp) return false;
-        const competitors = comp.competitors || [];
-        if (competitors.length < 2) return false;
-
-        const teamA = getTeamDetails(competitors[0].team?.abbreviation, competitors[0].team?.displayName);
-        const teamB = getTeamDetails(competitors[1].team?.abbreviation, competitors[1].team?.displayName);
-
-        const match1 = teamA.code === match.homeCode && teamB.code === match.awayCode;
-        const match2 = teamA.code === match.awayCode && teamB.code === match.homeCode;
-        return match1 || match2;
-      });
-
-      if (matchingEvent) {
-        const comp = matchingEvent.competitions?.[0];
-        const state = comp?.status?.type?.state;
-
-        if (state === 'post') {
-          const competitors = comp.competitors || [];
-          const homeComp = competitors.find((c: any) => {
-            const details = getTeamDetails(c.team?.abbreviation, c.team?.displayName);
-            return details.code === match.homeCode;
-          });
-          const awayComp = competitors.find((c: any) => {
-            const details = getTeamDetails(c.team?.abbreviation, c.team?.displayName);
-            return details.code === match.awayCode;
-          });
-
-          if (homeComp && awayComp) {
-            match.homeScore = parseInt(homeComp.score) ?? 0;
-            match.awayScore = parseInt(awayComp.score) ?? 0;
-            match.homePenalty = homeComp.shootoutScore !== undefined ? parseInt(homeComp.shootoutScore) : null;
-            match.awayPenalty = awayComp.shootoutScore !== undefined ? parseInt(awayComp.shootoutScore) : null;
-            updated = true;
-            console.log(`Bracket actualizado automáticamente: ${match.homeTeam} ${match.homeScore}(${match.homePenalty}) - ${match.awayScore}(${match.awayPenalty}) ${match.awayTeam}`);
-          }
-        }
-      }
-    }
-
-    if (updated) {
-      fs.writeFileSync(bracketFilePath, JSON.stringify(bracket, null, 2), 'utf-8');
-      console.log("bracket.json actualizado en el disco con éxito.");
-      return true;
-    }
-
-    return false;
-  } catch (error) {
-    console.error("Error al sincronizar los partidos del bracket:", error);
-    return false;
-  }
-}
-
 export async function GET() {
   try {
     const todayStr = getDateStr(0);
-    
-    // Sincronizar partidos del bracket pendientes de hoy o del pasado con ESPN
-    await syncBracketMatches(todayStr);
-
     const yesterdayStr = getDateStr(-1);
     // También necesitamos los eventos de mañana para capturar los partidos de medianoche VET
     const tomorrowStr = getDateStr(1);
@@ -374,8 +237,6 @@ export async function GET() {
         awayCode: awayDetails.code,
         homeScore: parseInt(home.score) || 0,
         awayScore: parseInt(away.score) || 0,
-        homePenalty: home.shootoutScore !== undefined ? parseInt(home.shootoutScore) : null,
-        awayPenalty: away.shootoutScore !== undefined ? parseInt(away.shootoutScore) : null,
       };
     }).filter(Boolean);
 

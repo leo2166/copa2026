@@ -182,6 +182,8 @@ export async function GET() {
             if (homeComp && awayComp) {
               match.homeScore = parseInt(homeComp.score) ?? 0;
               match.awayScore = parseInt(awayComp.score) ?? 0;
+              match.homePenalty = homeComp.shootoutScore !== undefined ? parseInt(homeComp.shootoutScore) : null;
+              match.awayPenalty = awayComp.shootoutScore !== undefined ? parseInt(awayComp.shootoutScore) : null;
             }
           }
         }
