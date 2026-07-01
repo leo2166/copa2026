@@ -23,7 +23,7 @@
       "awayScore": 1,
       "date": "29 de Junio",
       "time": "13:00",
-      "nextMatchId": "m18",
+      "nextMatchId": "m19",
       "nextMatchSlot": "home"
     },
     {
@@ -36,8 +36,8 @@
       "awayScore": 1,
       "date": "29 de Junio",
       "time": "16:30",
-      "nextMatchId": "m17",
-      "nextMatchSlot": "away",
+      "nextMatchId": "m18",
+      "nextMatchSlot": "home",
       "homePenalty": 3,
       "awayPenalty": 4
     },
@@ -51,7 +51,7 @@
       "awayScore": 1,
       "date": "29 de Junio",
       "time": "21:00",
-      "nextMatchId": "m18",
+      "nextMatchId": "m17",
       "nextMatchSlot": "away",
       "homePenalty": 2,
       "awayPenalty": 3
@@ -67,7 +67,7 @@
       "date": "30 de Junio",
       "time": "13:00",
       "nextMatchId": "m19",
-      "nextMatchSlot": "home"
+      "nextMatchSlot": "away"
     },
     {
       "id": "m6",
@@ -79,7 +79,7 @@
       "awayScore": 0,
       "date": "30 de Junio",
       "time": "17:00",
-      "nextMatchId": "m19",
+      "nextMatchId": "m18",
       "nextMatchSlot": "away"
     },
     {
@@ -118,8 +118,8 @@
       "awayScore": null,
       "date": "01 de Julio",
       "time": "16:00",
-      "nextMatchId": "m21",
-      "nextMatchSlot": "home"
+      "nextMatchId": "m22",
+      "nextMatchSlot": "away"
     },
     {
       "id": "m10",
@@ -131,8 +131,8 @@
       "awayScore": null,
       "date": "01 de Julio",
       "time": "20:00",
-      "nextMatchId": "m21",
-      "nextMatchSlot": "away"
+      "nextMatchId": "m22",
+      "nextMatchSlot": "home"
     },
     {
       "id": "m11",
@@ -144,8 +144,8 @@
       "awayScore": null,
       "date": "02 de Julio",
       "time": "15:00",
-      "nextMatchId": "m22",
-      "nextMatchSlot": "home"
+      "nextMatchId": "m21",
+      "nextMatchSlot": "away"
     },
     {
       "id": "m12",
@@ -157,8 +157,8 @@
       "awayScore": null,
       "date": "02 de Julio",
       "time": "19:00",
-      "nextMatchId": "m22",
-      "nextMatchSlot": "away"
+      "nextMatchId": "m21",
+      "nextMatchSlot": "home"
     },
     {
       "id": "m13",
@@ -170,7 +170,7 @@
       "awayScore": null,
       "date": "02 de Julio",
       "time": "23:00",
-      "nextMatchId": "m23",
+      "nextMatchId": "m24",
       "nextMatchSlot": "home"
     },
     {
@@ -196,7 +196,7 @@
       "awayScore": null,
       "date": "03 de Julio",
       "time": "18:00",
-      "nextMatchId": "m24",
+      "nextMatchId": "m23",
       "nextMatchSlot": "home"
     },
     {
@@ -222,7 +222,7 @@
       "awayCode": "",
       "homeScore": null,
       "awayScore": null,
-      "date": "05 de Julio",
+      "date": "04 de Julio",
       "time": "14:00",
       "nextMatchId": "m25",
       "nextMatchSlot": "home"
@@ -235,7 +235,7 @@
       "awayCode": "",
       "homeScore": null,
       "awayScore": null,
-      "date": "05 de Julio",
+      "date": "04 de Julio",
       "time": "18:00",
       "nextMatchId": "m25",
       "nextMatchSlot": "away"
@@ -248,7 +248,7 @@
       "awayCode": "",
       "homeScore": null,
       "awayScore": null,
-      "date": "06 de Julio",
+      "date": "05 de Julio",
       "time": "14:00",
       "nextMatchId": "m26",
       "nextMatchSlot": "home"
@@ -261,7 +261,7 @@
       "awayCode": "",
       "homeScore": null,
       "awayScore": null,
-      "date": "06 de Julio",
+      "date": "05 de Julio",
       "time": "18:00",
       "nextMatchId": "m26",
       "nextMatchSlot": "away"
@@ -274,7 +274,7 @@
       "awayCode": "",
       "homeScore": null,
       "awayScore": null,
-      "date": "07 de Julio",
+      "date": "06 de Julio",
       "time": "14:00",
       "nextMatchId": "m27",
       "nextMatchSlot": "home"
@@ -287,7 +287,7 @@
       "awayCode": "",
       "homeScore": null,
       "awayScore": null,
-      "date": "07 de Julio",
+      "date": "06 de Julio",
       "time": "18:00",
       "nextMatchId": "m27",
       "nextMatchSlot": "away"
@@ -300,7 +300,7 @@
       "awayCode": "",
       "homeScore": null,
       "awayScore": null,
-      "date": "08 de Julio",
+      "date": "07 de Julio",
       "time": "14:00",
       "nextMatchId": "m28",
       "nextMatchSlot": "home"
@@ -313,7 +313,7 @@
       "awayCode": "",
       "homeScore": null,
       "awayScore": null,
-      "date": "08 de Julio",
+      "date": "07 de Julio",
       "time": "18:00",
       "nextMatchId": "m28",
       "nextMatchSlot": "away"
