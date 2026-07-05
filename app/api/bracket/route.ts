@@ -123,13 +123,26 @@ export async function GET() {
     const todayStr = getTodayStr();
     const rounds = ["16avos", "octavos", "cuartos", "semis", "final"];
 
-    // ── Recopilar todas las fechas de partidos que necesitan score ────────────
-    const pendingDatesSet = new Set<string>();
-    const pendingItems: Array<{ round: string; match: any; dateStr: string }> = [];
+    // Caché en memoria para las peticiones de ESPN durante esta solicitud
+    const espnCache: Record<string, any[]> = {};
 
-    for (const round of rounds) {
-      const matches = bracket[round];
+    async function getCachedEspnScores(dateStr: string): Promise<any[]> {
+      if (espnCache[dateStr]) return espnCache[dateStr];
+      const scores = await fetchEspnScores(dateStr);
+      espnCache[dateStr] = scores;
+      return scores;
+    }
+
+    // Procesar ronda por ronda para propagar ganadores secuencialmente y buscar sus marcadores en ESPN
+    for (let i = 0; i < rounds.length; i++) {
+      const currentRound = rounds[i];
+      const matches = bracket[currentRound];
       if (!Array.isArray(matches)) continue;
+
+      // ── 1. Recopilar fechas de partidos de la ronda actual que necesitan score ──
+      const pendingDatesSet = new Set<string>();
+      const pendingItems: Array<{ match: any; dateStr: string }> = [];
+
       for (const match of matches) {
         const hasTeams =
           match.homeCode && match.awayCode &&
@@ -140,53 +153,114 @@ export async function GET() {
           const dateStr = parseBracketDate(match.date);
           if (dateStr && dateStr <= todayStr) {
             pendingDatesSet.add(dateStr);
-            pendingItems.push({ round, match, dateStr });
+            pendingItems.push({ match, dateStr });
           }
         }
       }
-    }
 
-    // ── Consultar ESPN para cada fecha pendiente (en paralelo) ────────────────
-    if (pendingItems.length > 0) {
-      const datesList = Array.from(pendingDatesSet);
-      const espnResults = await Promise.all(datesList.map(d => fetchEspnScores(d)));
+      // ── 2. Consultar ESPN para los partidos pendientes de esta ronda ──
+      if (pendingItems.length > 0) {
+        const datesList = Array.from(pendingDatesSet);
+        const espnResults = await Promise.all(datesList.map(d => getCachedEspnScores(d)));
 
-      const eventsByDate: Record<string, any[]> = {};
-      datesList.forEach((d, i) => { eventsByDate[d] = espnResults[i]; });
+        const eventsByDate: Record<string, any[]> = {};
+        datesList.forEach((d, idx) => { eventsByDate[d] = espnResults[idx]; });
 
-      for (const { match, dateStr } of pendingItems) {
-        const events = eventsByDate[dateStr] || [];
+        for (const { match, dateStr } of pendingItems) {
+          const events = eventsByDate[dateStr] || [];
 
-        const matchingEvent = events.find((event: any) => {
-          const competitors = event.competitions?.[0]?.competitors || [];
-          if (competitors.length < 2) return false;
-          const teamA = getTeamDetails(competitors[0].team?.abbreviation, competitors[0].team?.displayName);
-          const teamB = getTeamDetails(competitors[1].team?.abbreviation, competitors[1].team?.displayName);
-          return (teamA.code === match.homeCode && teamB.code === match.awayCode) ||
-                 (teamA.code === match.awayCode && teamB.code === match.homeCode);
-        });
+          const matchingEvent = events.find((event: any) => {
+            const competitors = event.competitions?.[0]?.competitors || [];
+            if (competitors.length < 2) return false;
+            const teamA = getTeamDetails(competitors[0].team?.abbreviation, competitors[0].team?.displayName);
+            const teamB = getTeamDetails(competitors[1].team?.abbreviation, competitors[1].team?.displayName);
+            return (teamA.code === match.homeCode && teamB.code === match.awayCode) ||
+                   (teamA.code === match.awayCode && teamB.code === match.homeCode);
+          });
 
-        if (matchingEvent) {
-          const comp = matchingEvent.competitions?.[0];
-          const state = comp?.status?.type?.state;
+          if (matchingEvent) {
+            const comp = matchingEvent.competitions?.[0];
+            const state = comp?.status?.type?.state;
 
-          // Incluir scores tanto si el partido terminó ('post') como si está en curso ('in')
-          if (state === 'post' || state === 'in') {
-            const competitors = comp.competitors || [];
-            const homeComp = competitors.find((c: any) =>
-              getTeamDetails(c.team?.abbreviation, c.team?.displayName).code === match.homeCode
-            );
-            const awayComp = competitors.find((c: any) =>
-              getTeamDetails(c.team?.abbreviation, c.team?.displayName).code === match.awayCode
-            );
-            if (homeComp && awayComp) {
-              match.homeScore = parseInt(homeComp.score) ?? 0;
-              match.awayScore = parseInt(awayComp.score) ?? 0;
-              match.homePenalty = homeComp.shootoutScore !== undefined ? parseInt(homeComp.shootoutScore) : null;
-              match.awayPenalty = awayComp.shootoutScore !== undefined ? parseInt(awayComp.shootoutScore) : null;
+            // Incluir scores tanto si el partido terminó ('post') como si está en curso ('in')
+            if (state === 'post' || state === 'in') {
+              const competitors = comp.competitors || [];
+              const homeComp = competitors.find((c: any) =>
+                getTeamDetails(c.team?.abbreviation, c.team?.displayName).code === match.homeCode
+              );
+              const awayComp = competitors.find((c: any) =>
+                getTeamDetails(c.team?.abbreviation, c.team?.displayName).code === match.awayCode
+              );
+              if (homeComp && awayComp) {
+                match.homeScore = parseInt(homeComp.score) ?? 0;
+                match.awayScore = parseInt(awayComp.score) ?? 0;
+                match.homePenalty = homeComp.shootoutScore !== undefined ? parseInt(homeComp.shootoutScore) : null;
+                match.awayPenalty = awayComp.shootoutScore !== undefined ? parseInt(awayComp.shootoutScore) : null;
+              }
             }
           }
         }
+      }
+
+      // ── 3. Propagar los ganadores de la ronda actual a la siguiente ronda ──
+      const nextRound = rounds[i + 1];
+      if (nextRound && bracket[nextRound]) {
+        matches.forEach((match) => {
+          if (match.nextMatchId && match.nextMatchSlot) {
+            const nextMatch = bracket[nextRound].find((m: any) => m.id === match.nextMatchId);
+            if (nextMatch) {
+              let winnerName = "Por definir";
+              let winnerCode = "";
+
+              const homeScore = match.homeScore;
+              const awayScore = match.awayScore;
+              const homePenalty = match.homePenalty;
+              const awayPenalty = match.awayPenalty;
+
+              if (homeScore !== null && awayScore !== null) {
+                const homeWon = homeScore > awayScore || 
+                  (homeScore === awayScore && 
+                   homePenalty !== undefined && homePenalty !== null && 
+                   awayPenalty !== undefined && awayPenalty !== null && 
+                   homePenalty > awayPenalty);
+                const awayWon = awayScore > homeScore || 
+                  (homeScore === awayScore && 
+                   homePenalty !== undefined && homePenalty !== null && 
+                   awayPenalty !== undefined && awayPenalty !== null && 
+                   awayPenalty > homePenalty);
+
+                if (homeWon) {
+                  winnerName = match.homeTeam;
+                  winnerCode = match.homeCode;
+                } else if (awayWon) {
+                  winnerName = match.awayTeam;
+                  winnerCode = match.awayCode;
+                } else {
+                  winnerName = `Ganador ${match.id.toUpperCase()}`;
+                  winnerCode = "";
+                }
+              } else {
+                const isHomeReal = match.homeCode !== "" && match.homeTeam !== "Por definir" && !match.homeTeam.startsWith("Ganador") && !match.homeTeam.startsWith("G.");
+                const isAwayReal = match.awayCode !== "" && match.awayTeam !== "Por definir" && !match.awayTeam.startsWith("Ganador") && !match.awayTeam.startsWith("G.");
+
+                if (isHomeReal && isAwayReal) {
+                  winnerName = `Gan. ${match.homeTeam}/${match.awayTeam}`;
+                } else {
+                  winnerName = `G. ${match.id.toUpperCase()}`;
+                }
+                winnerCode = "";
+              }
+
+              if (match.nextMatchSlot === "home") {
+                nextMatch.homeTeam = winnerName;
+                nextMatch.homeCode = winnerCode;
+              } else {
+                nextMatch.awayTeam = winnerName;
+                nextMatch.awayCode = winnerCode;
+              }
+            }
+          }
+        });
       }
     }
 
